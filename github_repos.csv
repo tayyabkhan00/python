@@ -1,0 +1,51 @@
+name,stars,forks,language,description
+30-Days-Of-Python,52563,10095,Python,"30 days of Python programming challenge is a step-by-step guide to learn the Python programming language in 30 days. This challenge may take more than 100 days, follow your own pace.  These videos may help too: https://www.youtube.com/channel/UC7PNRuno1rzYPb1xLa4yktw"
+pandas,47161,19323,Python,"Flexible and powerful data analysis / manipulation library for Python, providing labeled data structures similar to R data.frame objects, statistical functions, and much more"
+PythonDataScienceHandbook,46054,18608,Jupyter Notebook,Python Data Science Handbook: full text in Jupyter Notebooks
+Data-Science-For-Beginners,31377,6611,Jupyter Notebook,"10 Weeks, 20 Lessons, Data Science for All!"
+tqdm,30693,1410,Python,":zap: A Fast, Extensible Progress Bar for Python and CLI"
+data-science-ipython-notebooks,28704,8040,Python,"Data science Python notebooks: Deep learning (TensorFlow, Theano, Caffe, Keras), scikit-learn, Kaggle, big data (Spark, Hadoop MapReduce, HDFS), matplotlib, pandas, NumPy, SciPy, Python essentials, AWS, and various command lines."
+pandas-ai,22628,2214,Python,"Chat with your database or your datalake (SQL, CSV, parquet). PandasAI makes data analysis conversational using LLMs and RAG."
+datasets,20888,3018,Python,"🤗 The largest hub of ready-to-use datasets for AI models with fast, easy-to-use and efficient data manipulation tools"
+yfinance,19934,2908,Python,Download market data from Yahoo! Finance's API
+pygwalker,15441,846,Python,PyGWalker: Turn your dataframe into an interactive UI for visual analysis
+abu,15396,4279,Python,阿布量化交易系统(股票，期权，期货，比特币，机器学习) 基于python的开源量化交易，量化投资架构
+tushare,14107,4382,Python,TuShare is a utility for crawling historical data of China stocks
+dask,13610,1825,Python,Parallel computing with task scheduling
+seaborn,13573,2049,Python,Statistical data visualization in Python
+ydata-profiling,13267,1763,Python,1 Line of code data quality profiling & exploratory data analysis for Pandas and Spark DataFrames. 
+Ai-Learn,12208,2569,,"人工智能学习路线图，整理近200个实战案例与项目，免费提供配套教材，零基础入门，就业实战！包括：Python，数学，机器学习，数据分析，深度学习，计算机视觉，自然语言处理，PyTorch tensorflow machine-learning,deep-learning data-analysis data-mining mathematics data-science artificial-intelligence python tensorflow tensorflow2 caffe keras pytorch algorithm numpy pandas matplotlib seaborn nlp cv等热门领域"
+pandas_exercises,11822,8720,Jupyter Notebook,Practice your pandas skills!
+mlcourse.ai,10335,5718,Python,Open Machine Learning Course
+modin,10330,669,Python,Modin: Scale your Pandas workflows by changing a single line of code
+cudf,9340,984,C++,cuDF - GPU DataFrame Library 
+python_for_data_analysis_2nd_chinese_version,8646,2756,,《利用Python进行数据分析·第2版》
+visidata,8602,317,Python,A terminal spreadsheet multitool for discovering and arranging data
+py,7224,16880,Jupyter Notebook,Repository to store sample python programs for python learning
+pandas-cookbook,6956,2361,Jupyter Notebook,Recipes for using Python's pandas library
+pixie,6244,478,C++,Instant Kubernetes-Native Application Observability
+ibis,6224,684,Python,the portable Python dataframe library
+lance,5728,483,Rust,"Open Lakehouse Format for Multimodal AI. Convert from Parquet in 2 lines of code for 100x faster random access, vector index, and data versioning. Compatible with Pandas, DuckDB, Polars, Pyarrow, and PyTorch with more integrations coming.."
+orange3,5472,1077,Python,🍊 :bar_chart: :bulb: Orange: Interactive data analysis
+lux,5328,375,Python,Automatically visualize your pandas dataframe via a single print! 📊 💡
+joyful-pandas,5026,1936,Jupyter Notebook,pandas中文教程
+danfojs,5021,222,TypeScript,"Danfo.js is an open source, JavaScript library providing high performance, intuitive, and easy to use data structures for manipulating and processing structured data."
+dtale,5014,427,TypeScript,Visualizer for pandas data structures
+machine_learning_complete,4966,829,Jupyter Notebook,"A comprehensive machine learning repository containing 30+ notebooks on different concepts, algorithms and techniques."
+geopandas,4963,983,Python,Python tools for geographic data
+ta,4822,1122,Jupyter Notebook,Technical Analysis Library using Pandas and Numpy
+alpha_vantage,4664,777,Python,A python wrapper for Alpha Vantage API for financial data.
+pytorch-forecasting,4661,727,Python,Time series forecasting with PyTorch
+pydata-notebook,4659,1635,Jupyter Notebook,利用Python进行数据分析 第二版 (2017) 中文翻译笔记
+mimesis,4635,345,Python,Mimesis is a robust data generator for Python that can produce a wide range of fake data in multiple languages.
+preswald,4306,658,Python,"Preswald is a WASM packager for Python-based interactive data apps: bundle full complex data workflows, particularly visualizations, into single files, runnable completely in-browser, using Pyodide, DuckDB, Pandas, and Plotly, Matplotlib, etc. Build dashboards, reports, and notebooks that run offline, load fast, and share like a document."
+missingno,4165,530,Python,Missing data visualization module for Python.
+pandera,4093,363,Python,"A light-weight, flexible, and expressive statistical data testing library"
+aws-sdk-pandas,4079,722,Python,"pandas on AWS - Easy integration with Athena, Glue, Redshift, Timestream, Neptune, OpenSearch, QuickSight, Chime, CloudWatchLogs, DynamoDB, EMR, SecretManager, PostgreSQL, MySQL, SQLServer and S3 (Parquet, CSV, JSON and EXCEL)."
+xarray,4024,1199,Python,N-D labeled arrays and datasets in Python
+alphalens,3990,1276,Jupyter Notebook,Performance analysis of predictive (alpha) stock factors
+jetson-containers,3952,746,Jupyter Notebook,Machine Learning Containers for NVIDIA Jetson and JetPack-L4T
+Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials,3941,1637,Python,"A comprehensive list of Deep Learning / Artificial Intelligence and Machine Learning tutorials - rapidly expanding into areas of AI/Deep Learning / Machine Vision / NLP and industry specific areas such as Climate / Energy, Automotives, Retail, Pharma, Medicine, Healthcare, Policy, Ethics and more."
+XlsxWriter,3861,657,Python,A Python module for creating Excel XLSX files.
+pandarallel,3798,212,Python,A simple and efficient tool to parallelize Pandas operations on all available CPUs
+AI-Engineer-Headquarters,3663,700,Jupyter Notebook,"A collection of scientific methods, processes, algorithms, and systems to build stories & models."
