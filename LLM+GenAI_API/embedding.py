@@ -1,6 +1,7 @@
 import google.generativeai as genai
+import os
 
-genai.configure(api_key="AIzaSyCQOro3gTm3VeWTLVFvU3BkaLoBKqRNx5w")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 emb_model = "models/text-embedding-004"
 
 text = "Customer complained about slow delivery."
