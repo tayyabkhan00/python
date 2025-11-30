@@ -31,3 +31,13 @@ def twoSum(nums, target):
         else:
             right -= 1
 print(twoSum([2, 7, 11, 15], 9))
+
+# 4. Using Set for Lookup (Alternative Optimized Method — O(n))
+def twoSum(nums, target):
+    seen = set()
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [nums.index(complement), i]
+        seen.add(num)
+print(twoSum([2, 7, 11, 15], 9))
