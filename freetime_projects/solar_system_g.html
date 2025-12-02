@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D CSS Solar System</title>
+    <style>
+        /* --- General Setup --- */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #050505;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        /* Create a starfield background */
+        .stars {
+            width: 1px;
+            height: 1px;
+            background: transparent;
+            box-shadow: 100px 200px #fff, 400px 500px #FFF, 800px 100px #FFF, 
+                        1200px 300px #FFF, 50px 800px #FFF, 1000px 800px #FFF, 
+                        300px 50px #FFF, 900px 10px #FFF;
+            animation: twinkle 5s infinite;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* --- The System Container --- */
+        .solar-system {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* Zoom out slightly to fit outer planets */
+            transform: scale(0.6); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- The Sun --- */
+        .sun {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #ffd200, #f57f17);
+            border-radius: 50%;
+            box-shadow: 0 0 40px #f57f17;
+            z-index: 100;
+        }
+
+        /* --- General Orbit Logic --- */
+        /* The structural ring that shows the path */
+        .orbit-ring {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+        }
+
+        /* The invisible container that spins */
+        .orbit-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            animation: spin linear infinite;
+        }
+
+        /* The Planet Object */
+        .planet {
+            position: absolute;
+            top: 50%;
+            left: 100%; /* Places planet on the edge of the container */
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        /* --- Planet Specifics (Size, Color, Distance, Speed) --- */
+        
+        /* 1. Mercury */
+        .mercury-orbit-size { width: 120px; height: 120px; }
+        .mercury-spin { animation-duration: 4s; }
+        .mercury {
+            width: 10px; height: 10px;
+            background: #aaa;
+        }
+
+        /* 2. Venus */
+        .venus-orbit-size { width: 180px; height: 180px; }
+        .venus-spin { animation-duration: 7s; }
+        .venus {
+            width: 18px; height: 18px;
+            background: #e3bb76;
+        }
+
+        /* 3. Earth & Moon */
+        .earth-orbit-size { width: 260px; height: 260px; }
+        .earth-spin { animation-duration: 10s; }
+        .earth {
+            width: 22px; height: 22px;
+            background: #2f6a69;
+        }
+        
+        /* Earth's Moon System */
+        .moon-system {
+            position: absolute;
+            width: 40px; height: 40px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: spin 2s linear infinite;
+        }
+        .moon {
+            position: absolute;
+            top: 50%; left: 100%;
+            width: 6px; height: 6px;
+            background: #ddd;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 4. Mars & Moons */
+        .mars-orbit-size { width: 340px; height: 340px; }
+        .mars-spin { animation-duration: 14s; }
+        .mars {
+            width: 16px; height: 16px;
+            background: #c1440e;
+        }
+        .mars-moons {
+            position: absolute;
+            width: 30px; height: 30px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: spin 1.5s linear infinite;
+        }
+        .phobos { top: 50%; left: 100%; width: 4px; height: 4px; background: #888; position: absolute; border-radius: 50%; }
+        .deimos { top: 0%; left: 50%; width: 3px; height: 3px; background: #777; position: absolute; border-radius: 50%; }
+
+        /* 5. Jupiter & Galilean Moons */
+        .jupiter-orbit-size { width: 500px; height: 500px; }
+        .jupiter-spin { animation-duration: 25s; }
+        .jupiter {
+            width: 50px; height: 50px;
+            background: linear-gradient(to bottom, #90614d, #c88b3a, #90614d);
+        }
+        .jupiter-moons {
+            position: absolute;
+            width: 80px; height: 80px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: spin 4s linear infinite;
+        }
+        /* Visualizing 4 moons in a cross pattern for simplicity */
+        .j-moon { position: absolute; background: #dccbba; border-radius: 50%; width: 6px; height: 6px; }
+        .ganymede { top: 50%; left: 100%; }
+        .callisto { top: 100%; left: 50%; }
+        .io { top: 50%; left: 0%; }
+        .europa { top: 0%; left: 50%; }
+
+        /* 6. Saturn & Ring & Moons */
+        .saturn-orbit-size { width: 700px; height: 700px; }
+        .saturn-spin { animation-duration: 35s; }
+        .saturn {
+            width: 45px; height: 45px;
+            background: #e2bf7d;
+            /* Simple CSS Ring */
+            box-shadow: 0 0 0 6px rgba(100, 100, 100, 0.4), 0 0 0 12px rgba(167, 149, 105, 0.4);
+        }
+        .saturn-moons {
+            position: absolute; width: 100px; height: 100px;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            animation: spin 5s linear infinite;
+        }
+        .titan { top: 100%; left: 50%; width: 8px; height: 8px; background: #c5a165; border-radius: 50%; position: absolute;}
+        .enceladus { top: 0%; left: 50%; width: 4px; height: 4px; background: #fff; border-radius: 50%; position: absolute;}
+
+        /* 7. Uranus */
+        .uranus-orbit-size { width: 850px; height: 850px; }
+        .uranus-spin { animation-duration: 45s; }
+        .uranus {
+            width: 35px; height: 35px;
+            background: #a6d9e8;
+        }
+        .uranus-moons {
+            position: absolute; width: 60px; height: 60px;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            animation: spin 3s linear infinite;
+        }
+        .titania { top: 100%; left: 50%; width: 5px; height: 5px; background: #ccc; border-radius: 50%; position: absolute;}
+
+        /* 8. Neptune */
+        .neptune-orbit-size { width: 980px; height: 980px; }
+        .neptune-spin { animation-duration: 55s; }
+        .neptune {
+            width: 34px; height: 34px;
+            background: #3e54e8;
+        }
+        .neptune-moons {
+            position: absolute; width: 50px; height: 50px;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            animation: spin 3s linear infinite;
+        }
+        .triton { top: 0%; left: 50%; width: 5px; height: 5px; background: #eee; border-radius: 50%; position: absolute;}
+
+
+        /* --- Animations --- */
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="stars"></div>
+
+    <div class="solar-system">
+        <div class="sun"></div>
+
+        <div class="orbit-ring mercury-orbit-size"></div>
+        <div class="orbit-container mercury-orbit-size mercury-spin">
+            <div class="planet mercury"></div>
+        </div>
+
+        <div class="orbit-ring venus-orbit-size"></div>
+        <div class="orbit-container venus-orbit-size venus-spin">
+            <div class="planet venus"></div>
+        </div>
+
+        <div class="orbit-ring earth-orbit-size"></div>
+        <div class="orbit-container earth-orbit-size earth-spin">
+            <div class="planet earth">
+                <div class="moon-system">
+                    <div class="moon"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="orbit-ring mars-orbit-size"></div>
+        <div class="orbit-container mars-orbit-size mars-spin">
+            <div class="planet mars">
+                 <div class="mars-moons">
+                    <div class="phobos"></div>
+                    <div class="deimos"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="orbit-ring jupiter-orbit-size"></div>
+        <div class="orbit-container jupiter-orbit-size jupiter-spin">
+            <div class="planet jupiter">
+                <div class="jupiter-moons">
+                    <div class="j-moon ganymede"></div>
+                    <div class="j-moon callisto"></div>
+                    <div class="j-moon io"></div>
+                    <div class="j-moon europa"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="orbit-ring saturn-orbit-size"></div>
+        <div class="orbit-container saturn-orbit-size saturn-spin">
+            <div class="planet saturn">
+                <div class="saturn-moons">
+                    <div class="titan"></div>
+                    <div class="enceladus"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="orbit-ring uranus-orbit-size"></div>
+        <div class="orbit-container uranus-orbit-size uranus-spin">
+            <div class="planet uranus">
+                <div class="uranus-moons">
+                    <div class="titania"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="orbit-ring neptune-orbit-size"></div>
+        <div class="orbit-container neptune-orbit-size neptune-spin">
+            <div class="planet neptune">
+                <div class="neptune-moons">
+                    <div class="triton"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
