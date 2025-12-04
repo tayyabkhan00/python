@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Particle Hand Interaction with AI Vibe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000000;
+            font-family: 'Inter', sans-serif;
+        }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 400px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        }
+        p {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .llm-control {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(10, 10, 30, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+        }
+        .prompt-input {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #00ffff55;
+            background: rgba(2, 2, 10, 0.8);
+            color: #E0FFFF;
+            font-size: 0.9rem;
+        }
+        #generate-button {
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: none;
+            background: linear-gradient(90deg, #00ffff, #ff00cc);
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #generate-button:hover {
+            opacity: 0.85;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+        .status-text {
+            min-height: 1.2rem;
+            font-size: 0.8rem;
+            color: #00ffff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <h1>FLUID PARTICLES</h1>
+        <p>Interact with the particles using your cursor/touch.</p>
+
+        <div class="llm-control">
+            <input type="text" id="vibe-prompt" placeholder="e.g., 'a calm ocean ripple' or 'a hot lava field'" value="a swirling cosmic nebula" class="prompt-input">
+            <button id="generate-button">✨ Generate Vibe</button>
+            <div id="status-message" class="status-text">Ready to generate.</div>
+        </div>
+    </div>
+
+    <!-- Import Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- LLM API Configuration ---
+        const apiKey = ""; // API key is provided by the environment
+        const apiUrlBase = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent";
+        const apiUrl = `${apiUrlBase}?key=${apiKey}`;
+
+        // --- CONFIGURATION (Now Mutable) ---
+        const PARTICLE_COUNT_X = 150; // Width resolution
+        const PARTICLE_COUNT_Z = 100; // Depth resolution
+        const SEPARATION = 15;        // Distance between dots
+
+        // Mutable Physics/Color Variables
+        let SPRING_STRENGTH = 0.05; // How fast they return to default (0.01 - 0.1)
+        let DAMPING = 0.95;         // Friction (0.8 - 0.99)
+        let MOUSE_INFLUENCE_RADIUS = 120; // 50 - 200
+        let MOUSE_FORCE = 500;      // Strength of the push (300 - 1000)
+        let colorHex1 = 0x00ffff;   // Hex color for the start of the gradient
+        let colorHex2 = 0xff00cc;   // Hex color for the end of the gradient
+        
+        const color1 = new THREE.Color(colorHex1);
+        const color2 = new THREE.Color(colorHex2);
+        
+        // --- DOM Elements ---
+        const promptInput = document.getElementById('vibe-prompt');
+        const generateButton = document.getElementById('generate-button');
+        const statusMessage = document.getElementById('status-message');
+
+
+        // --- SCENE SETUP ---
+        const scene = new THREE.Scene();
+        // Dark blue fog for depth
+        scene.fog = new THREE.FogExp2(0x020202, 0.0015);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000);
+        camera.position.set(0, 600, 700);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // --- PARTICLE SYSTEM SETUP ---
+        const totalParticles = PARTICLE_COUNT_X * PARTICLE_COUNT_Z;
+        const geometry = new THREE.BufferGeometry();
+        
+        const positions = new Float32Array(totalParticles * 3);
+        const originalPositions = new Float32Array(totalParticles * 3);
+        const velocities = new Float32Array(totalParticles * 3);
+        const colors = new Float32Array(totalParticles * 3);
+
+        // Function to set initial particle data
+        function initializeParticles() {
+            let idx = 0;
+            for (let ix = 0; ix < PARTICLE_COUNT_X; ix++) {
+                for (let iz = 0; iz < PARTICLE_COUNT_Z; iz++) {
+                    const x = (ix * SEPARATION) - ((PARTICLE_COUNT_X * SEPARATION) / 2);
+                    const z = (iz * SEPARATION) - ((PARTICLE_COUNT_Z * SEPARATION) / 2);
+                    const y = 0;
+
+                    positions[idx] = x;
+                    positions[idx + 1] = y;
+                    positions[idx + 2] = z;
+
+                    originalPositions[idx] = x;
+                    originalPositions[idx + 1] = y;
+                    originalPositions[idx + 2] = z;
+
+                    velocities[idx] = 0;
+                    velocities[idx + 1] = 0;
+                    velocities[idx + 2] = 0;
+
+                    // Color is handled by applyColors, called below
+                    idx += 3;
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.attributes.position.needsUpdate = true;
+        }
+        
+        // Function to create the particle texture
+        function getTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            const context = canvas.getContext('2d');
+            const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.4, 'rgba(255,255,255,0.5)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0)');
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, 32, 32);
+            const texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+            return texture;
+        }
+
+        const material = new THREE.PointsMaterial({
+            size: 8,
+            map: getTexture(),
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            depthTest: false,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+        initializeParticles(); // Initialize the data structures
+
+        // --- LLM GENERATION & APPLICATION ---
+
+        // Helper for exponential backoff during API calls
+        async function exponentialBackoffFetch(url, payload, maxRetries = 5, delay = 1000) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.ok) {
+                        return await response.json();
+                    }
+                    if (response.status === 429 || response.status >= 500) {
+                        // Retry on rate limit or server error
+                        await new Promise(resolve => setTimeout(resolve, delay * (2 ** i)));
+                        continue;
+                    }
+                    throw new Error(`API Error: ${response.statusText}`);
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    // Wait before retrying
+                    await new Promise(resolve => setTimeout(resolve, delay * (2 ** i)));
+                }
+            }
+            throw new Error("Failed to fetch from API after multiple retries.");
+        }
+
+
+        /**
+         * Converts hex string (like #FF00FF or FF00FF) to a number (0xFF00FF).
+         */
+        function parseHexColor(hex) {
+            if (typeof hex !== 'string') return 0x000000;
+            return parseInt(hex.replace(/^#/, ''), 16);
+        }
+
+        /**
+         * Recalculates particle colors based on new global colorHex1 and colorHex2.
+         */
+        function applyColors() {
+            color1.set(colorHex1);
+            color2.set(colorHex2);
+            let idx = 0;
+            
+            for (let ix = 0; ix < PARTICLE_COUNT_X; ix++) {
+                for (let iz = 0; iz < PARTICLE_COUNT_Z; iz++) {
+                    // Gradient Colors based on depth (ix)
+                    const mixedColor = color1.clone().lerp(color2, ix / PARTICLE_COUNT_X);
+                    colors[idx] = mixedColor.r;
+                    colors[idx + 1] = mixedColor.g;
+                    colors[idx + 2] = mixedColor.b;
+                    idx += 3;
+                }
+            }
+            geometry.attributes.color.needsUpdate = true;
+        }
+
+
+        /**
+         * Applies the new configuration received from the LLM.
+         */
+        function applyVibe(config) {
+            SPRING_STRENGTH = config.springStrength;
+            DAMPING = config.damping;
+            MOUSE_INFLUENCE_RADIUS = config.mouseInfluenceRadius;
+            MOUSE_FORCE = config.mouseForce;
+            colorHex1 = parseHexColor(config.color1);
+            colorHex2 = parseHexColor(config.color2);
+            
+            applyColors();
+            statusMessage.textContent = `Applied vibe: ${promptInput.value}. Physics updated.`;
+        }
+
+        /**
+         * Calls the Gemini API to generate configuration based on the user's prompt.
+         */
+        async function generateVibe() {
+            const userPrompt = promptInput.value.trim();
+            if (!userPrompt) {
+                statusMessage.textContent = "Please enter a descriptive prompt.";
+                return;
+            }
+
+            statusMessage.textContent = "✨ Generating configuration... (10s)";
+            generateButton.disabled = true;
+
+            const systemPrompt = `You are a 3D particle system configuration generator. Based on the user's vibe, provide a JSON object with the following parameters. Ensure all values are within the specified ranges.
+
+1. color1 (string, hex format: "#RRGGBB") - The primary color.
+2. color2 (string, hex format: "#RRGGBB") - The secondary color for gradient.
+3. damping (number, float between 0.9 and 0.99) - Friction. Lower value makes it wobbly.
+4. springStrength (number, float between 0.01 and 0.1) - How quickly particles return home. Higher value makes it stiff.
+5. mouseInfluenceRadius (number, integer between 50 and 200) - Size of the interaction area.
+6. mouseForce (number, integer between 300 and 1000) - Strength of the push.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "color1": { "type": "STRING", "description": "Primary hex color, e.g., #00FFFF" },
+                            "color2": { "type": "STRING", "description": "Secondary hex color, e.g., #FF00CC" },
+                            "damping": { "type": "NUMBER", "description": "Friction float (0.9 to 0.99)" },
+                            "springStrength": { "type": "NUMBER", "description": "Stiffness float (0.01 to 0.1)" },
+                            "mouseInfluenceRadius": { "type": "INTEGER", "description": "Interaction radius (50 to 200)" },
+                            "mouseForce": { "type": "INTEGER", "description": "Push strength (300 to 1000)" }
+                        },
+                        required: ["color1", "color2", "damping", "springStrength", "mouseInfluenceRadius", "mouseForce"]
+                    }
+                }
+            };
+
+            try {
+                const result = await exponentialBackoffFetch(apiUrl, payload);
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!jsonText) {
+                    throw new Error("API returned no content.");
+                }
+                const config = JSON.parse(jsonText);
+                applyVibe(config);
+
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                statusMessage.textContent = `Error: Failed to generate vibe. Check console.`;
+            } finally {
+                generateButton.disabled = false;
+            }
+        }
+        
+        generateButton.addEventListener('click', generateVibe);
+        
+        // Apply initial colors after setup
+        applyColors();
+
+        // --- INTERACTION LOGIC ---
+        
+        // A virtual plane at y=0 to map mouse coordinates to 3D space
+        const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const target3D = new THREE.Vector3(); // Where the "hand" is in 3D
+        let isMouseActive = false;
+
+        function onPointerMove(event) {
+            isMouseActive = true;
+            // Normalize mouse position (-1 to +1)
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', (e) => {
+            onPointerMove(e.touches[0]);
+        }, { passive: false });
+
+
+        // --- ANIMATION LOOP ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // 1. Raycast to find where the mouse touches the particle plane
+            if (isMouseActive) {
+                raycaster.setFromCamera(mouse, camera);
+                raycaster.ray.intersectPlane(plane, target3D);
+            }
+
+            const posArray = particles.geometry.attributes.position.array;
+            
+            // 2. Physics Loop
+            let i = 0;
+            // Iterate over every particle
+            for (let j = 0; j < totalParticles; j++) {
+                
+                // Get current position
+                const px = posArray[i];
+                const py = posArray[i + 1];
+                const pz = posArray[i + 2];
+
+                // Get original position (home)
+                const ox = originalPositions[i];
+                const oy = originalPositions[i + 1];
+                const oz = originalPositions[i + 2];
+
+                // Get velocity
+                let vx = velocities[i];
+                let vy = velocities[i + 1];
+                let vz = velocities[i + 2];
+
+                // --- A. Force from Mouse (Repulsion) ---
+                if (isMouseActive) {
+                    const dx = px - target3D.x;
+                    const dz = pz - target3D.z;
+                    const distSq = dx * dx + dz * dz;
+
+                    if (distSq < MOUSE_INFLUENCE_RADIUS * MOUSE_INFLUENCE_RADIUS) {
+                        const dist = Math.sqrt(distSq);
+                        const force = (1 - dist / MOUSE_INFLUENCE_RADIUS) * MOUSE_FORCE;
+                        
+                        vy -= force * 0.05; 
+                    }
+                }
+
+                // --- B. Spring Force (Return to Original) ---
+                const dxHome = ox - px;
+                const dyHome = oy - py;
+                const dzHome = oz - pz;
+
+                vx += dxHome * SPRING_STRENGTH;
+                vy += dyHome * SPRING_STRENGTH;
+                vz += dzHome * SPRING_STRENGTH;
+
+                // --- C. Apply Damping (Friction) ---
+                vx *= DAMPING;
+                vy *= DAMPING;
+                vz *= DAMPING;
+
+                // --- D. Update Position ---
+                posArray[i] += vx;
+                posArray[i + 1] += vy;
+                posArray[i + 2] += vz;
+
+                // Save new velocities
+                velocities[i] = vx;
+                velocities[i + 1] = vy;
+                velocities[i + 2] = vz;
+
+                i += 3;
+            }
+
+            // Mark geometry for update
+            particles.geometry.attributes.position.needsUpdate = true;
+
+            // Optional: Subtle gentle camera movement
+            const time = clock.getElapsedTime();
+            particles.rotation.y = Math.sin(time * 0.1) * 0.05;
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
