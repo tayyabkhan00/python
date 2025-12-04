@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Interactive DSA Visualizer — Animated Roadmap</title>
+  <style>
+    :root{--bg:#071124;--card:#071427;--accent:#60a5fa;--muted:#94a3b8;--glass: rgba(255,255,255,0.03);}    
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:#e6eef8;background:linear-gradient(180deg,#061021 0%, #07122a 60%);}    
+    .app{max-width:1200px;margin:20px auto;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));box-shadow:0 10px 40px rgba(2,6,23,0.7)}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    h1{font-size:18px;margin:0;color:white}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.02);cursor:pointer;color:var(--muted)}
+    .tab.active{background:linear-gradient(90deg, rgba(96,165,250,0.12), rgba(96,165,250,0.05));color:var(--accent);border-color:rgba(96,165,250,0.18)}
+    .layout{display:grid;grid-template-columns:1fr 360px;gap:16px}
+    .card{background:rgba(255,255,255,0.02);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+    .visual{height:420px;display:flex;align-items:center;justify-content:center;position:relative;overflow:auto}
+    .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.03);color:var(--accent);padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:600}
+    .btn.secondary{color:var(--muted);background:transparent;border:1px dashed rgba(255,255,255,0.03)}
+    .small{font-size:13px;color:var(--muted)}
+    .node{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));min-width:44px;transition:transform .4s ease,opacity .35s}
+    .node.pulse{animation: pulse 900ms infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(96,165,250,0.12)}50%{box-shadow:0 0 0 12px rgba(96,165,250,0.02)}100%{box-shadow:0 0 0 0 rgba(96,165,250,0.0)}}
+    .line{height:2px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(96,165,250,0.12));flex:0 0 40px}
+    .moving{transform:translateY(-18px);}
+    .fade-out{opacity:0;transform:translateX(30px) scale(.98)}
+    .slide-in{transform:translateX(40px);opacity:0;animation:slideIn .45s forwards}
+    @keyframes slideIn{to{transform:none;opacity:1}}
+    .node.big{transform:scale(1.08)}
+    .arrow{width:60px;height:2px;background:linear-gradient(90deg, transparent, rgba(96,165,250,0.6));position:absolute}
+    .log{height:160px;overflow:auto;padding:10px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px dashed rgba(255,255,255,0.02);font-family:monospace;font-size:13px;color:var(--muted)}
+    footer{margin-top:10px;color:var(--muted);font-size:13px}
+    @media (max-width:980px){.layout{grid-template-columns:1fr;}.visual{height:320px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>Interactive DSA Visualizer — Animated Roadmap</h1>
+        <div class="small">Animated modules: Arrays → LinkedList → Stack → Queue → HashMap → Trees → Graphs → Recursion → DP</div>
+      </div>
+      <div class="tabs" id="tabs"></div>
+    </header>
+
+    <div class="layout">
+      <main class="card">
+        <div id="content">
+          <!-- dynamic content inserted here -->
+        </div>
+      </main>
+
+      <aside class="card">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="controls" id="controls"></div>
+          <div class="small">Animated Step Log</div>
+          <div id="log" class="log" role="log" aria-live="polite"></div>
+          <div class="small">Tip: click actions — animations show how data moves. Reply "Python" for notebook animations.</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="small">Save this file and open in a browser. Works offline.</footer>
+  </div>
+
+<script>
+// Animated Roadmap Visualizer
+const modules = ['Arrays','LinkedList','Stack','Queue','HashMap','Trees','Graphs','Recursion','DP'];
+const tabsEl = document.getElementById('tabs');
+const controlsEl = document.getElementById('controls');
+const contentEl = document.getElementById('content');
+const logEl = document.getElementById('log');
+function log(msg){ const p=document.createElement('div'); p.textContent=(new Date()).toLocaleTimeString()+" — "+msg; logEl.prepend(p); }
+let state = { module:'Arrays' };
+modules.forEach(m=>{ const b=document.createElement('button'); b.className='tab'+(m===state.module?' active':''); b.textContent=m; b.addEventListener('click', ()=>{ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); b.classList.add('active'); state.module=m; renderModule(); }); tabsEl.appendChild(b); });
+function clearControls(){ controlsEl.innerHTML=''; }
+function setControls(html){ controlsEl.innerHTML=''; controlsEl.appendChild(html); }
+function renderModule(){ clearControls(); contentEl.innerHTML=''; log('Switched to '+state.module);
+  if(state.module==='Arrays') renderArrays();
+  if(state.module==='LinkedList') renderLinkedList();
+  if(state.module==='Stack') renderStack();
+  if(state.module==='Queue') renderQueue();
+  if(state.module==='HashMap') renderHashMap();
+  if(state.module==='Trees') renderTrees();
+  if(state.module==='Graphs') renderGraphs();
+  if(state.module==='Recursion') renderRecursion();
+  if(state.module==='DP') renderDP();
+}
+
+// --- Arrays (animated swaps) ---
+function renderArrays(){
+  const html = document.createElement('div');
+  html.innerHTML = `<h2>Arrays — indexed boxes & animated swaps</h2><div class="visual" id="arrVis"></div>`;
+  contentEl.appendChild(html);
+  const vis = document.getElementById('arrVis');
+  let arr = [9,34,7,23,11,56,2,41];
+
+  function draw(){ vis.innerHTML=''; const row=document.createElement('div'); row.style.display='flex'; row.style.gap='12px'; row.style.alignItems='flex-end'; arr.forEach((v,i)=>{ const n=document.createElement('div'); n.className='node'; n.dataset.index=i; n.innerHTML=`<div style="font-size:12px;color:var(--muted)">${i}</div><div style="font-weight:800">${v}</div>`; row.appendChild(n);} ); vis.appendChild(row); }
+  draw();
+
+  const c = document.createElement('div'); c.className='controls';
+  const shuffle=document.createElement('button'); shuffle.className='btn'; shuffle.textContent='Shuffle (animated)'; shuffle.onclick=async()=>{ await animateShuffle(); log('Array shuffled'); };
+  const bubble=document.createElement('button'); bubble.className='btn'; bubble.textContent='Animate Bubble Sort'; bubble.onclick=()=>animateBubble();
+  c.appendChild(shuffle); c.appendChild(bubble); setControls(c);
+
+  async function animateShuffle(){ // animate random swaps
+    for(let k=0;k<8;k++){ const i=Math.floor(Math.random()*arr.length); const j=Math.floor(Math.random()*arr.length); if(i===j) continue; await animateSwap(i,j); }
+    draw();
+  }
+
+  function getNodes(){ return Array.from(vis.querySelectorAll('.node')); }
+
+  function animateSwap(i,j){ return new Promise(res=>{
+    const nodes = getNodes(); const a=nodes[i]; const b=nodes[j]; if(!a||!b) return res();
+    const rectA=a.getBoundingClientRect(); const rectB=b.getBoundingClientRect();
+    const dx = rectB.left - rectA.left;
+    const tempA = a.cloneNode(true); const tempB = b.cloneNode(true);
+    tempA.style.position='absolute'; tempB.style.position='absolute';
+    tempA.style.left=rectA.left+'px'; tempA.style.top=rectA.top+'px';
+    tempB.style.left=rectB.left+'px'; tempB.style.top=rectB.top+'px';
+    tempA.style.zIndex=999; tempB.style.zIndex=999;
+    document.body.appendChild(tempA); document.body.appendChild(tempB);
+    a.style.visibility='hidden'; b.style.visibility='hidden';
+    tempA.animate([{transform:'translate(0,0)'},{transform:`translate(${dx}px, -18px)`}],{duration:450,fill:'forwards'});
+    tempB.animate([{transform:'translate(0,0)'},{transform:`translate(${-dx}px, 18px)`}],{duration:450,fill:'forwards'});
+    setTimeout(()=>{ document.body.removeChild(tempA); document.body.removeChild(tempB); // swap data
+      const t=arr[i]; arr[i]=arr[j]; arr[j]=t; draw(); log(`Swapped indices ${i} & ${j}`); res(); },480);
+  }); }
+
+  async function animateBubble(){ for(let end=arr.length-1; end>0; end--){ for(let i=0;i<end;i++){ const a=arr[i], b=arr[i+1]; const nodes=getNodes(); nodes[i].classList.add('pulse'); nodes[i+1].classList.add('pulse'); await new Promise(r=>setTimeout(r,350)); if(a>b){ await animateSwap(i,i+1); } nodes[i] && nodes[i].classList.remove('pulse'); nodes[i+1] && nodes[i+1].classList.remove('pulse'); } }
+    log('Bubble sort animation finished'); }
+}
+
+// --- Linked List (animated insert/remove) ---
+function renderLinkedList(){
+  const html = document.createElement('div');
+  html.innerHTML = `<h2>Linked List — animated pointers</h2><div class="visual" id="llVis"></div>`;
+  contentEl.appendChild(html);
+  const vis = document.getElementById('llVis');
+  let nodes = [5,12,8,21];
+
+  function draw(){ vis.innerHTML=''; const row=document.createElement('div'); row.style.display='flex'; row.style.alignItems='center'; row.style.gap='10px'; nodes.forEach((v,i)=>{ const n=document.createElement('div'); n.className='node'; n.style.minWidth='60px'; n.style.transition='transform .35s'; n.innerHTML=`<div style="font-weight:700">${v}</div><div style="font-size:11px;color:var(--muted)">${i}</div>`; row.appendChild(n); if(i<nodes.length-1){ const l=document.createElement('div'); l.className='line'; row.appendChild(l);} }); vis.appendChild(row);} draw();
+
+  const c=document.createElement('div'); c.className='controls';
+  const addHead=document.createElement('button'); addHead.className='btn'; addHead.textContent='Add Head (animated)'; addHead.onclick=async()=>{ const val=Math.floor(Math.random()*90)+1; // create visual node that slides in
+    const temp=document.createElement('div'); temp.className='node slide-in'; temp.style.position='absolute'; temp.style.left=(vis.getBoundingClientRect().left+10)+'px'; temp.style.top=(vis.getBoundingClientRect().top+20)+'px'; temp.textContent=val; document.body.appendChild(temp); await new Promise(r=>setTimeout(r,420)); document.body.removeChild(temp); nodes.unshift(val); draw(); log('Added head '+val); };
+  const addTail=document.createElement('button'); addTail.className='btn'; addTail.textContent='Add Tail (animated)'; addTail.onclick=async()=>{ const val=Math.floor(Math.random()*90)+1; const row=vis.querySelector('div'); const x = vis.getBoundingClientRect().right - 40; const temp=document.createElement('div'); temp.className='node slide-in'; temp.style.position='absolute'; temp.style.left=(x)+'px'; temp.style.top=(vis.getBoundingClientRect().top+40)+'px'; temp.textContent=val; document.body.appendChild(temp); await new Promise(r=>setTimeout(r,420)); document.body.removeChild(temp); nodes.push(val); draw(); log('Added tail '+val); };
+  const delHead=document.createElement('button'); delHead.className='btn secondary'; delHead.textContent='Remove Head (animated)'; delHead.onclick=async()=>{ if(nodes.length===0) return; const removed=nodes.shift(); draw(); log('Removed head '+removed); };
+  c.appendChild(addHead); c.appendChild(addTail); c.appendChild(delHead); setControls(c);
+}
+
+// --- Stack (push/pop animation) ---
+function renderStack(){
+  const html=document.createElement('div'); html.innerHTML=`<h2>Stack — push/pop animations</h2><div class="visual" id="stackVis"></div>`; contentEl.appendChild(html);
+  const vis=document.getElementById('stackVis'); let stack=[3,7,14];
+  function draw(){ vis.innerHTML=''; const col=document.createElement('div'); col.style.display='flex'; col.style.flexDirection='column-reverse'; col.style.gap='8px'; stack.forEach(v=>{ const n=document.createElement('div'); n.className='node'; n.style.width='110px'; n.innerHTML=`<div style="font-weight:700">${v}</div>`; col.appendChild(n);} ); vis.appendChild(col);} draw();
+  const c=document.createElement('div'); c.className='controls';
+  const push=document.createElement('button'); push.className='btn'; push.textContent='Push (animated)'; push.onclick=async()=>{ const v=Math.floor(Math.random()*90)+1; // create temp and slide to top
+    const temp=document.createElement('div'); temp.className='node'; temp.style.position='absolute'; const r=vis.getBoundingClientRect(); temp.style.left=(r.left + r.width/2 - 30)+'px'; temp.style.top=(r.top-40)+'px'; temp.textContent=v; document.body.appendChild(temp); await new Promise(r=>setTimeout(r,220)); temp.animate([{transform:'translateY(0)'},{transform:'translateY(60px)'}],{duration:380,fill:'forwards'}); await new Promise(r=>setTimeout(r,420)); document.body.removeChild(temp); stack.push(v); draw(); log('Pushed '+v); };
+  const pop=document.createElement('button'); pop.className='btn secondary'; pop.textContent='Pop (animated)'; pop.onclick=async()=>{ if(stack.length===0) return; // animate top element moving up and fading
+    const col = vis.querySelector('div'); const top = col && col.lastElementChild; if(top){ const rect=top.getBoundingClientRect(); const temp = top.cloneNode(true); temp.style.position='absolute'; temp.style.left=rect.left+'px'; temp.style.top=rect.top+'px'; temp.style.zIndex=999; document.body.appendChild(temp); top.style.visibility='hidden'; temp.animate([{transform:'translateY(0)'},{transform:'translateY(-48px) scale(.95)', opacity:0}],{duration:420,fill:'forwards'}); await new Promise(r=>setTimeout(r,420)); document.body.removeChild(temp); } const v=stack.pop(); draw(); log('Popped '+v); };
+  c.appendChild(push); c.appendChild(pop); setControls(c);
+}
+
+// --- Queue (enqueue/dequeue animation) ---
+function renderQueue(){
+  const html=document.createElement('div'); html.innerHTML=`<h2>Queue — enqueue / dequeue animation</h2><div class="visual" id="qVis"></div>`; contentEl.appendChild(html);
+  const vis=document.getElementById('qVis'); let q=[10,22,31,44];
+  function draw(){ vis.innerHTML=''; const row=document.createElement('div'); row.style.display='flex'; row.style.gap='10px'; q.forEach(v=>{ const n=document.createElement('div'); n.className='node'; n.innerHTML=`<div style="font-weight:700">${v}</div>`; row.appendChild(n);} ); vis.appendChild(row);} draw();
+  const c=document.createElement('div'); c.className='controls'; const enqueue=document.createElement('button'); enqueue.className='btn'; enqueue.textContent='Enqueue (animated)'; enqueue.onclick=async()=>{ const val=Math.floor(Math.random()*90)+1; // animate incoming from right
+    const temp=document.createElement('div'); temp.className='node'; temp.style.position='absolute'; const r=vis.getBoundingClientRect(); temp.style.left=(r.right+20)+'px'; temp.style.top=(r.top+40)+'px'; temp.textContent=val; document.body.appendChild(temp); temp.animate([{transform:'translateX(0)'},{transform:`translateX(${-(r.width-60)}px)`}],{duration:420,fill:'forwards'}); await new Promise(r=>setTimeout(r,420)); document.body.removeChild(temp); q.push(val); draw(); log('Enqueued '+val); };
+  const dequeue=document.createElement('button'); dequeue.className='btn secondary'; dequeue.textContent='Dequeue (animated)'; dequeue.onclick=async()=>{ if(q.length===0) return; const row=vis.querySelector('div'); const first = row && row.firstElementChild; if(first){ const rect=first.getBoundingClientRect(); const temp=first.cloneNode(true); temp.style.position='absolute'; temp.style.left=rect.left+'px'; temp.style.top=rect.top+'px'; temp.style.zIndex=999; document.body.appendChild(temp); first.style.visibility='hidden'; temp.animate([{transform:'translateX(0)'},{transform:'translateX(-60px)', opacity:0}],{duration:360,fill:'forwards'}); await new Promise(r=>setTimeout(r,360)); document.body.removeChild(temp); } const v=q.shift(); draw(); log('Dequeued '+v); };
+  c.appendChild(enqueue); c.appendChild(dequeue); setControls(c);
+}
+
+// --- HashMap (animated insert to bucket) ---
+function renderHashMap(){
+  const html=document.createElement('div'); html.innerHTML=`<h2>HashMap — buckets and insert animation</h2><div class="visual" id="mapVis"></div>`; contentEl.appendChild(html);
+  const vis=document.getElementById('mapVis'); const buckets=6; let map = Array.from({length:buckets}, ()=>[]);
+  function rebuild(){ map = Array.from({length:buckets}, ()=>[]); [12,5,44,23,17,29,11].forEach(v=>{ map[v % buckets].push(v);}); draw(); }
+  function draw(){ vis.innerHTML=''; const wrap=document.createElement('div'); wrap.style.display='flex'; wrap.style.gap='12px'; map.forEach((bucket,i)=>{ const col=document.createElement('div'); col.style.display='flex'; col.style.flexDirection='column'; col.style.gap='6px'; const head=document.createElement('div'); head.className='small'; head.textContent='bucket['+i+']'; col.appendChild(head); bucket.forEach(v=>{ const n=document.createElement('div'); n.className='node'; n.style.minWidth='60px'; n.textContent=v; col.appendChild(n); }); wrap.appendChild(col); }); vis.appendChild(wrap); }
+  rebuild(); const c=document.createElement('div'); c.className='controls'; const add=document.createElement('button'); add.className='btn'; add.textContent='Insert rand (animated)'; add.onclick=async()=>{ const v=Math.floor(Math.random()*90)+1; const bucketIndex = v % buckets; // animate element moving to bucket
+    const temp=document.createElement('div'); temp.className='node'; temp.style.position='absolute'; const r=vis.getBoundingClientRect(); temp.style.left=(r.right-40)+'px'; temp.style.top=(r.top+20)+'px'; temp.textContent=v; document.body.appendChild(temp);
+    // compute target bucket position after draw
+    map[bucketIndex].push(v); draw(); await new Promise(r=>setTimeout(r,80)); const wrap = vis.querySelector('div'); const targetCol = wrap.children[bucketIndex]; const targetRect = targetCol.getBoundingClientRect(); const dx = targetRect.left - r.right + 20; const dy = targetRect.top - r.top + 30;
+    temp.animate([{transform:'translate(0,0)'},{transform:`translate(${dx}px, ${dy}px) scale(.95)`}],{duration:520,fill:'forwards'});
+    await new Promise(r=>setTimeout(r,540)); document.body.removeChild(temp); draw(); log('Inserted '+v+' into bucket '+bucketIndex); };
+  const clear=document.createElement('button'); clear.className='btn secondary'; clear.textContent='Clear'; clear.onclick=()=>{ for(let i=0;i<map.length;i++) map[i]=[]; draw(); log('Cleared hash map'); };
+  c.appendChild(add); c.appendChild(clear); setControls(c);
+}
+
+// --- Trees (animated insert + connecting lines) ---
+function renderTrees(){
+  const html=document.createElement('div'); html.innerHTML=`<h2>Binary Search Tree — animated insert & traversal</h2><div class="visual" id="treeVis" style="position:relative"></div>`; contentEl.appendChild(html);
+  const vis=document.getElementById('treeVis');
+  class Node{ constructor(v){this.v=v;this.left=null;this.right=null;this.x=0;this.y=0;} }
+  let root=null;
+  function insert(v){ if(!root){ root=new Node(v); return; } let cur=root; while(true){ if(v<cur.v){ if(!cur.left){ cur.left=new Node(v); break; } cur=cur.left; } else { if(!cur.right){ cur.right=new Node(v); break; } cur=cur.right; } } }
+  [25,14,36,10,20,30,40].forEach(x=>insert(x));
+  function layout(){ const positions=[]; let idx=0; function inOrder(node,depth){ if(!node) return; inOrder(node.left,depth+1); node.x = ++idx; node.y = depth; positions.push(node); inOrder(node.right,depth+1); } inOrder(root,0); return positions; }
+  function draw(){ vis.innerHTML=''; if(!root){ vis.textContent='(empty)'; return; } const positions = layout(); const wrap=document.createElement('div'); wrap.style.position='relative'; wrap.style.minHeight='320px'; wrap.style.width='100%'; positions.forEach(p=>{ const d=document.createElement('div'); d.className='node'; d.style.position='absolute'; const x = p.x * 80; const y = p.y * 80 + 30; d.style.left = x+'px'; d.style.top = y+'px'; d.style.transform='translate(-50%, -50%)'; d.textContent=p.v; wrap.appendChild(d); // draw lines
+      if(p.left){ const l=document.createElement('div'); l.style.position='absolute'; l.style.left = ((p.x)*80 - 20)+'px'; l.style.top = (y - 30)+'px'; l.style.width='2px'; l.style.height = (p.left.y*80 + 30 - (y - 30))+'px'; l.style.background='linear-gradient(180deg, rgba(255,255,255,0.02), rgba(96,165,250,0.14))'; wrap.appendChild(l);} if(p.right){ const rline=document.createElement('div'); rline.style.position='absolute'; rline.style.left = ((p.x)*80 + 20)+'px'; rline.style.top = (y - 30)+'px'; rline.style.width='2px'; rline.style.height = (p.right.y*80 + 30 - (y - 30))+'px'; rline.style.background='linear-gradient(180deg, rgba(255,255,255,0.02), rgba(96,165,250,0.14))'; wrap.appendChild(rline);} }); vis.appendChild(wrap); }
+  draw(); const c=document.createElement('div'); c.className='controls'; const add=document.createElement('button'); add.className='btn'; add.textContent='Insert rand (animated)'; add.onclick=async()=>{ const v=Math.floor(Math.random()*90)+1; // show temp node falling into place
+    const temp=document.createElement('div'); temp.className='node'; temp.style.position='absolute'; const r=vis.getBoundingClientRect(); temp.style.left=(r.left + r.width/2)+'px'; temp.style.top=(r.top-20)+'px'; temp.textContent=v; document.body.appendChild(temp); temp.animate([{transform:'translateY(0)'},{transform:'translateY(120px) scale(.98)'}],{duration:560,fill:'forwards'});
+    await new Promise(r=>setTimeout(r,580)); document.body.removeChild(temp); insert(v); draw(); log('Inserted '+v+' into BST'); };
+  const travers=document.createElement('button'); travers.className='btn secondary'; travers.textContent='Inorder (animated)'; travers.onclick=async()=>{ const res=[]; function inorder(n){ if(!n) return; inorder(n.left); res.push(n); inorder(n.right);} inorder(root); for(const node of res){ // highlight node in sequence
+      const wrap = vis.querySelector('div'); const elems = wrap.querySelectorAll('.node'); for(const el of elems){ if(el.textContent==node.v){ el.classList.add('pulse'); await new Promise(r=>setTimeout(r,420)); el.classList.remove('pulse'); break; } } }
+    log('Animated inorder traversal'); };
+  c.appendChild(add); c.appendChild(travers); setControls(c);
+}
+
+// --- Graphs (animated BFS / DFS with pulsing nodes) ---
+function renderGraphs(){
+  const html=document.createElement('div'); html.innerHTML=`<h2>Graph — animated BFS / DFS</h2><div class="visual" id="graphVis"></div>`; contentEl.appendChild(html);
+  const vis=document.getElementById('graphVis'); const adj = {0:[1,2],1:[0,3],2:[0,3],3:[1,2,4],4:[3]};
+  function draw(highlight=[]){ vis.innerHTML=''; const wrap=document.createElement('div'); wrap.style.display='flex'; wrap.style.gap='14px'; Object.keys(adj).forEach(k=>{ const n=document.createElement('div'); n.className='node'; if(highlight.includes(Number(k))) n.classList.add('pulse'); n.textContent='n'+k; wrap.appendChild(n); }); vis.appendChild(wrap); }
+  draw(); const c=document.createElement('div'); c.className='controls'; const bfs=document.createElement('button'); bfs.className='btn'; bfs.textContent='BFS from 0'; bfs.onclick=async()=>{ log('BFS starting at 0'); const q=[0]; const seen=new Set([0]); const order=[]; while(q.length){ const u=q.shift(); order.push(u); draw(order); await sleep(420); for(const v of adj[u]) if(!seen.has(v)){ seen.add(v); q.push(v); } } log('BFS order: '+order.join(', ')); };
+  const dfs=document.createElement('button'); dfs.className='btn secondary'; dfs.textContent='DFS from 0'; dfs.onclick=async()=>{ log('DFS starting at 0'); const order=[]; const seen=new Set(); async function dfsRec(u){ seen.add(u); order.push(u); draw(order); await sleep(420); for(const v of adj[u]) if(!seen.has(v)) await dfsRec(v); }
+    await dfsRec(0); log('DFS order: '+order.join(', ')); };
+  c.appendChild(bfs); c.appendChild(dfs); setControls(c);
+}
+
+// --- Recursion (animated call stack) ---
+function renderRecursion(){
+  const html=document.createElement('div'); html.innerHTML=`<h2>Recursion — animated call stack (factorial)</h2><div class="visual" id="recVis"></div>`; contentEl.appendChild(html);
+  const vis=document.getElementById('recVis');
+  function drawRec(n){ vis.innerHTML=''; const stackWrap=document.createElement('div'); stackWrap.style.display='flex'; stackWrap.style.flexDirection='column-reverse'; stackWrap.style.alignItems='center'; stackWrap.style.justifyContent='center'; stackWrap.style.gap='8px'; function pushFrame(x){ const f=document.createElement('div'); f.className='node'; f.style.minWidth='160px'; f.textContent='fact('+x+')'; stackWrap.appendChild(f); }
+    function build(x){ pushFrame(x); if(x>1) build(x-1); }
+    build(n); vis.appendChild(stackWrap);
+  }
+  drawRec(5);
+  const c=document.createElement('div'); c.className='controls'; const run=document.createElement('button'); run.className='btn'; run.textContent='Show fact(6) (animated)'; run.onclick=async()=>{ vis.innerHTML=''; const n=6; const stackWrap=document.createElement('div'); stackWrap.style.display='flex'; stackWrap.style.flexDirection='column-reverse'; stackWrap.style.alignItems='center'; stackWrap.style.justifyContent='center'; stackWrap.style.gap='8px'; vis.appendChild(stackWrap);
+    for(let i=n;i>=1;i--){ const f=document.createElement('div'); f.className='node'; f.style.minWidth='160px'; f.style.opacity=0; f.textContent='fact('+i+')'; stackWrap.appendChild(f); f.animate([{opacity:0, transform:'translateY(24px)'},{opacity:1, transform:'translateY(0)'}],{duration:320,fill:'forwards'}); await sleep(260); }
+    log('Displayed recursion call stack for fact('+n+')'); };
+  c.appendChild(run); setControls(c);
+}
+
+// --- DP (animated table fill) ---
+function renderDP(){
+  const html=document.createElement('div'); html.innerHTML=`<h2>Dynamic Programming — tabulation (Fibonacci)</h2><div class="visual" id="dpVis"></div>`; contentEl.appendChild(html);
+  const vis=document.getElementById('dpVis'); function drawFib(n){ vis.innerHTML=''; const table=document.createElement('div'); table.style.display='flex'; table.style.gap='8px'; const dp=[]; for(let i=0;i<=n;i++){ dp[i]=0; const cell=document.createElement('div'); cell.className='node'; cell.textContent=i; cell.style.opacity=0.45; table.appendChild(cell);} vis.appendChild(table); let i=0; const step = setInterval(()=>{ if(i>n){ clearInterval(step); log('DP computed fib('+n+')='+dp[n]); return; } if(i<=1) dp[i]=i; else dp[i]=dp[i-1]+dp[i-2]; const cells = table.children; cells[i].textContent = dp[i]; cells[i].style.opacity=1; cells[i].classList.add('big'); setTimeout(()=>cells[i].classList.remove('big'),300); i++; }, 420); }
+  drawFib(10); const c=document.createElement('div'); c.className='controls'; const run=document.createElement('button'); run.className='btn'; run.textContent='Compute fib(12)'; run.onclick=()=>{ drawFib(12); log('Started DP fib(12)'); };
+  c.appendChild(run); setControls(c);
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+renderModule();
+</script>
+</body>
+</html>
