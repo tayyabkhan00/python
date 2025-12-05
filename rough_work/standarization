@@ -1,4 +1,20 @@
-Q1. Standardize the array [2, 4, 6, 8]
+⭐ Why Computers Prefer Standardized Values?
+✔ Matrix multiplication becomes faster
+
+Numbers between -1 and 1 are easier to compute.
+
+✔ Fewer memory problems
+
+Large numbers cause computational instability.
+
+✔ Better numerical precision
+
+Floating-point calculations become more accurate.
+
+
+
+
+✅ Q1. Standardize the array [2, 4, 6, 8]
 mean = (2 + 4 + 6 + 8) / 4 = 20/4 = 5
 
 Step 2: Standard Deviation
@@ -37,3 +53,30 @@ x	(x-5)/2.236	result
 8	3/2.236	+1.34
 ✔ Final Answer:
 [-1.34, -0.45, 0.45, 1.34]
+
+✅ Q3. Why do we standardize before training a neural network?
+✔ Answer:
+
+Because neural networks learn using gradient descent, and standardization makes the learning faster, stable, and prevents one feature from dominating others.
+
+✅ Q4. Which will dominate KNN — Age or Salary?
+Feature	Range
+Age	20–50
+Salary	20,000–80,000
+✔ Salary will dominate.
+
+Because its values are much larger, so distance calculations become unfair.
+
+KNN will think salary is more important (even if it’s not).
+
+✅ Q5. After standardization, the mean and std become?
+
+Always:
+
+Metric	Value
+Mean	0
+Standard deviation	1
+
+That’s the purpose of standardization.
+
+
