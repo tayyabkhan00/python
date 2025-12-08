@@ -10,3 +10,7 @@ model.fit(X, y)
 
 print(model.predict([[3.5]]))       # 0 or 1
 print(model.predict_proba([[3.5]])) # probability
+
+# output:
+# 0.49996763 → probability of class 0 (NO)
+# 0.50003237 → probability of class 1 (YES)
