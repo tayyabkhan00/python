@@ -18,3 +18,7 @@ print("Accuracy:", rf.score(X_test, y_test))
 importances = rf.feature_importances_
 top3 = sorted(zip(importances, iris.feature_names), reverse=True)[:3]
 print("Top 3 important features:", top3)
+
+
+# [:3] prints the top 3 important features based on their importance scores.
+# zip(importances, iris.feature_names) pairs each feature's importance score with its name.

@@ -9,7 +9,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 print("Train X:", X_train)
 print("Test X:", X_test)
-
+print(y_test)
 
 # test_size=0.25 → 25% test, 75% train
 # random_state=0 → makes split same every time

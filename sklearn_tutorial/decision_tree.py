@@ -18,3 +18,9 @@ plot_tree(tree, filled=True, feature_names=iris.feature_names, class_names=iris.
 plt.show()
 
 print("Feature Importances:", tree.feature_importances_)
+
+# | Term                     | Meaning                                    |
+# | ------------------------ | ------------------------------------------ |
+# | **feature_names**        | Names of input columns                     |
+# | **class_names**          | Names of output classes                    |
+# | **feature_importances_** | Importance of each feature in a tree model |
