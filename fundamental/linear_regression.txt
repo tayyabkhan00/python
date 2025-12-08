@@ -92,3 +92,36 @@ Slope (m)	Steepness of line	How much y changes when x changes
 Intercept (c)	Where line hits y-axis	y value when x = 0
 Prediction (y_pred)	Using line to find y for any x	Model guess
 MSE	Avg mistake	How bad the predictions are
+
+🎯 R² Score (Coefficient of Determination):
+R² tells how GOOD your line is.
+👉 Simple Meaning
+R² = How much the model explains the data
+Value is between 0 and 1 (sometimes negative)
+
+⭐ MSE vs R²:
+| Metric  | Meaning                 | Goal               | Range  |
+| ------- | ----------------------- | ------------------ | ------ |
+| **MSE** | Average squared error   | **Lower is good**  | 0 → ∞  |
+| **R²**  | How well line fits data | **Higher is good** | -∞ → 1 |
+
+⭐ Summary:
+MSE = How wrong are predictions?
+Lower = better
+R² = How good is the line?
+Higher = better
+| R² Value | Meaning                           |
+| -------- | --------------------------------- |
+| **1.0**  | perfect model                     |
+| **0.9**  | 90% of data explained             |
+| **0.5**  | average                           |
+| **0**    | model is useless                  |
+| **< 0**  | model is worse than just guessing |
+
+🎯 MSE — Mean Squared Error:
+MSE tells you how WRONG your predictions are.
+👉 Formula (very simple)
+MSE = average of (prediction – actual)²
+Why squared?
+To make all errors positive
+To punish big mistakes more

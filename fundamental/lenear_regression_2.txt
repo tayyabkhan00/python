@@ -1,0 +1,45 @@
+**⭐ If outcome is a number, linear regression is used.**
+
+📏 The Math (very simple)
+Linear regression equation:
+y = m × x + b
+m = slope (how steep the line is)
+b = intercept (where line starts)
+x = input
+y = predicted value
+But don’t worry — sklearn calculates m and b automatically.
+
+⭐ Key Terms (explained very easy):
+Training → feeding data to learn the best line
+Model → the line created
+Prediction → using the line to guess new values
+Loss/Error → how far prediction is from real value
+R² score → how good the line is (0 to 1)
+
+🎯 Cost Function (Mean Squared Error):
+This measures how bad the line is.
+MSE = average of (predicted – actual)²
+Why squared?
+Because negative errors should not cancel positive ones.
+Goal: Make error as small as possible.
+
+🎯 Gradient Descent (How the model learns m and b):
+Think of a ball rolling down a hill.
+Ball = algorithm
+Hill = error
+Bottom = best values of m & b
+Gradient descent updates:
+m = m – learning_rate × derivative
+b = b – learning_rate × derivative
+This slowly finds the optimal slope & intercept.
+➡️ You don’t manually do this.
+sklearn does it for you.
+
+🎯 ⭐ Final Summary:
+Linear Regression is:
+✔ simplest ML model
+✔ used to predict numbers
+✔ finds best straight line
+✔ uses MSE + Gradient Descent
+✔ easy to implement and interpret
+✔ perfect first ML algorithm
