@@ -1,0 +1,55 @@
+🧠 In LSTM, we have TWO types of memory
+
+h_t → Hidden state (short-term memory)
+c_t → Cell state (long-term memory)
+Both are updated at every timestep.
+
+⭐ Is hₙ the previous or recent memory?
+h_n = the final hidden state after the last time step.
+It represents:
+short-term memory
+what LSTM wants to “output” at each step
+So hₙ = recent (latest) memory.
+
+⭐ How is cₙ calculated?
+c_n = final cell state after the last time step
+This is the long-term memory and is computed using the LSTM formula:
+c_t = f_t * c_(t-1) + i_t * g_t
+Where:
+f_t = forget gate
+i_t = input gate
+g_t = candidate new memory
+c_(t-1) = previous cell state
+Let’s break this into simple words:
+✔ Step 1: Forget old memory
+forget_gate * previous_cell_state
+✔ Step 2: Add new important memory
+input_gate * candidate_state
+✔ Step 3: Combine to form new cell state
+c_t = (things to keep) + (things to add)
+This updated c_t becomes the next timestep’s c_(t-1).
+At the final timestep:
+c_n = last cell state (long-term memory)
+
+⭐ Relationship between hₜ and cₜ
+After computing c_t, the hidden state is calculated using the output gate:
+h_t = output_gate * tanh(c_t)
+So:
+c_t = what LSTM stores
+h_t = what LSTM outputs
+
+📌 Simple Intuition
+Memory Type.            Variable	            Meaning
+Long-term memory	        cₙ          	What the LSTM keeps for a long time
+Short-term output memory	hₙ	            What the LSTM uses right now
+
+✔ Example in PyTorch Returning Values
+If sequence length = 5, LSTM returns:
+output → hidden states at all 5 steps
+h_n    → hidden state at step 5 (final)
+c_n    → cell state at step 5 (final)
+So yes:
+hₙ = recent short-term memory
+cₙ = recent long-term memory
+And c_n is ALWAYS calculated using:
+forget gate + new info gate
