@@ -9,3 +9,31 @@ Types of ML
 Supervised Learning – Labeled data (e.g., spam / not spam).
 Unsupervised Learning – No labels (e.g., clustering customers).
 Reinforcement Learning – Learning by trial & reward (like playing games).
+
+2. Linear Models
+Linear models predict using a line/hyperplane:
+𝑦=𝑤^𝑇*𝑥+𝑏
+Where →
+w = weights
+b = bias
+x = input features
+
+2.1 Logistic Regression
+Used for binary classification (Yes/No).
+Key Idea:
+Logistic Regression outputs probability using sigmoid:
+𝜎(𝑧)=1/1+𝑒^−𝑧
+Decision:
+If probability > 0.5 → Class 1
+Else → Class 0
+
+2.2 Perceptron
+The simplest neural network (1 neuron).
+Working:
+Take weighted sum:
+𝑧=𝑤^𝑇𝑥+𝑏
+Apply step function:
+If z > 0 → 1
+Else → 0
+Perceptron Limitation:
+Cannot solve non-linear problems (like XOR).
