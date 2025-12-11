@@ -9,6 +9,10 @@ sigmoid = 1 / (1 + np.exp(-x))
 relu = np.maximum(0, x)
 tanh = np.tanh(x)
 
+print(relu)
+print(tanh)
+print(sigmoid)
+'''
 # Softmax works on a vector, not a single x
 vec = np.array([1.0, 2.0, 3.0, 4.0])
 softmax = np.exp(vec) / np.sum(np.exp(vec))
@@ -31,3 +35,4 @@ plt.xticks(range(len(vec)), vec)
 plt.ylabel("Probability")
 plt.grid(True, axis='y')
 plt.show()
+'''
