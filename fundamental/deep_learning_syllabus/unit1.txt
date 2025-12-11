@@ -1,0 +1,11 @@
+UNIT – 1 : INTRODUCTION (Deep Learning)
+
+1. Introduction to Machine Learning
+What is Machine Learning?
+Machine Learning (ML) is a method where a computer learns patterns from data instead of being manually programmed.
+Simple Example:
+Give many images of cats → ML learns the pattern → Predicts “cat” for new image.
+Types of ML
+Supervised Learning – Labeled data (e.g., spam / not spam).
+Unsupervised Learning – No labels (e.g., clustering customers).
+Reinforcement Learning – Learning by trial & reward (like playing games).
