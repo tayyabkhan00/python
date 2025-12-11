@@ -37,3 +37,15 @@ If z > 0 → 1
 Else → 0
 Perceptron Limitation:
 Cannot solve non-linear problems (like XOR).
+
+2.3 Support Vector Machines (SVMs)
+SVM finds the best separating line (hyperplane) between two classes.
+Goal:
+Maximize margin (distance between line and nearest points).
+Diagram (simple):
+Class 1: o o o
+               \   <-- decision boundary
+Class 2: x x x
+Important Terms
+Support Vectors → Points closest to boundary
+Kernel Trick → Converts non-linear data into linear form
