@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Algorithms Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tween.js@18.6.4/dist/tween.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 2px solid #0fceff;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: #0fceff;
+            text-shadow: 0 0 10px rgba(15, 206, 255, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a3d5ff;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .visualization-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(30, 30, 60, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(15, 206, 255, 0.2);
+        }
+        
+        .algorithm-title {
+            font-size: 1.8rem;
+            color: #0fceff;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(15, 206, 255, 0.3);
+        }
+        
+        #visualization-container {
+            width: 100%;
+            height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #0a0a1a;
+            border: 1px solid rgba(15, 206, 255, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #0fceff 0%, #0a9ec7 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(15, 206, 255, 0.4);
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(15, 206, 255, 0.6);
+        }
+        
+        .control-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .control-btn.active {
+            background: linear-gradient(135deg, #ff4d8d 0%, #c70039 100%);
+            box-shadow: 0 5px 15px rgba(255, 77, 141, 0.4);
+        }
+        
+        .explanation {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(30, 30, 60, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(15, 206, 255, 0.2);
+        }
+        
+        .explanation h2 {
+            color: #0fceff;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .algorithm-explanation {
+            margin-bottom: 25px;
+        }
+        
+        .algorithm-explanation h3 {
+            color: #ff4d8d;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .algorithm-explanation p {
+            line-height: 1.7;
+            color: #c2e0ff;
+            margin-bottom: 15px;
+        }
+        
+        .algorithm-explanation ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .algorithm-explanation li {
+            line-height: 1.6;
+            color: #c2e0ff;
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            color: #0fceff;
+            font-weight: bold;
+        }
+        
+        .analogy-section {
+            margin-top: 40px;
+            background: rgba(30, 30, 60, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(15, 206, 255, 0.2);
+        }
+        
+        .analogy-section h2 {
+            color: #0fceff;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .analogy {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .analogy-item {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(40, 40, 80, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #0fceff;
+        }
+        
+        .analogy-item h3 {
+            color: #ff4d8d;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .analogy-item p {
+            line-height: 1.6;
+            color: #c2e0ff;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid rgba(15, 206, 255, 0.3);
+            color: #a3d5ff;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Machine Learning Algorithms Visualized</h1>
+            <p class="subtitle">An interactive visualization to help understand how Logistic Regression, Perceptron, and Support Vector Machines (SVM) classify data. Click the buttons to see each algorithm in action!</p>
+        </header>
+        
+        <div class="main-content">
+            <section class="visualization-section">
+                <h2 class="algorithm-title" id="current-algorithm">Perceptron Algorithm</h2>
+                <div id="visualization-container"></div>
+                
+                <div class="controls">
+                    <button class="control-btn active" id="btn-perceptron">Perceptron</button>
+                    <button class="control-btn" id="btn-logistic">Logistic Regression</button>
+                    <button class="control-btn" id="btn-svm">SVM</button>
+                    <button class="control-btn" id="btn-reset">Reset Data</button>
+                    <button class="control-btn" id="btn-animate">Animate Learning</button>
+                </div>
+            </section>
+            
+            <section class="explanation">
+                <h2>How It Works</h2>
+                
+                <div class="algorithm-explanation" id="perceptron-explanation">
+                    <h3>Perceptron</h3>
+                    <p>The Perceptron is like a simple decision maker that learns from its mistakes:</p>
+                    <ul>
+                        <li>It tries to draw a <span class="highlight">straight line</span> to separate two classes</li>
+                        <li>When it makes a mistake, it adjusts the line slightly</li>
+                        <li>It keeps adjusting until it gets all points right (if possible)</li>
+                        <li>Only works when data is <span class="highlight">linearly separable</span></li>
+                    </ul>
+                    <p>Watch the blue line adjust as the algorithm learns!</p>
+                </div>
+                
+                <div class="algorithm-explanation" id="logistic-explanation" style="display: none;">
+                    <h3>Logistic Regression</h3>
+                    <p>Logistic Regression doesn't just draw a line - it calculates <span class="highlight">probabilities</span>:</p>
+                    <ul>
+                        <li>It finds the line that best separates the classes</li>
+                        <li>Instead of a hard boundary, it gives probabilities (0% to 100%)</li>
+                        <li>The line represents where the probability is exactly 50%</li>
+                        <li>Uses a special "S-shaped" curve called the sigmoid function</li>
+                    </ul>
+                    <p>Notice how the boundary appears gradually as probabilities are calculated!</p>
+                </div>
+                
+                <div class="algorithm-explanation" id="svm-explanation" style="display: none;">
+                    <h3>Support Vector Machine (SVM)</h3>
+                    <p>SVM finds the <span class="highlight">best possible boundary</span> with the maximum margin:</p>
+                    <ul>
+                        <li>It looks for the widest "street" between classes</li>
+                        <li>Only cares about points closest to the boundary (support vectors)</li>
+                        <li>Tries to be as far as possible from both classes</li>
+                        <li>This helps it generalize better to new data</li>
+                    </ul>
+                    <p>See how the boundary maximizes distance from both classes!</p>
+                </div>
+            </section>
+        </div>
+        
+        <section class="analogy-section">
+            <h2>Kid-Friendly Analogies</h2>
+            <div class="analogy">
+                <div class="analogy-item">
+                    <h3>Perceptron - The Simple Rule Learner</h3>
+                    <p>Imagine you're sorting red and blue marbles. You try drawing a line on the floor to separate them. If a red marble is on the blue side, you move the line a little. You keep adjusting until all red marbles are on one side and all blue on the other.</p>
+                </div>
+                
+                <div class="analogy-item">
+                    <h3>Logistic Regression - The Probability Expert</h3>
+                    <p>Instead of just saying "this is red" or "this is blue", you say "this is 80% likely to be red and 20% likely to be blue". You draw a fuzzy boundary where it's 50-50, and the further from the boundary, the more certain you are.</p>
+                </div>
+                
+                <div class="analogy-item">
+                    <h3>SVM - The Safety Expert</h3>
+                    <p>You want to build the widest possible road between red and blue marbles so that even if someone accidentally kicks a marble, it won't cross to the other side. You only care about marbles right at the edge of each group.</p>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>Interactive Visualization of Machine Learning Algorithms | Created with Three.js | For Educational Purposes</p>
+            <p>Click "Animate Learning" to see each algorithm learn step-by-step!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Global variables
+        let scene, camera, renderer, points = [];
+        let decisionBoundary = null;
+        let marginLines = [];
+        let currentAlgorithm = 'perceptron';
+        let isAnimating = false;
+        let animationId = null;
+        
+        // Perceptron variables
+        let perceptronWeights = [Math.random() * 2 - 1, Math.random() * 2 - 1];
+        let perceptronBias = Math.random() * 2 - 1;
+        let learningRate = 0.1;
+        
+        // Logistic Regression variables
+        let logisticWeights = [Math.random() * 2 - 1, Math.random() * 2 - 1];
+        let logisticBias = Math.random() * 2 - 1;
+        
+        // SVM variables
+        let svmWeights = [Math.random() * 2 - 1, Math.random() * 2 - 1];
+        let svmBias = Math.random() * 2 - 1;
+        
+        // Initialize the visualization
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a1a);
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(75, 
+                document.getElementById('visualization-container').clientWidth / 
+                document.getElementById('visualization-container').clientHeight, 
+                0.1, 1000);
+            camera.position.z = 25;
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(
+                document.getElementById('visualization-container').clientWidth,
+                document.getElementById('visualization-container').clientHeight
+            );
+            document.getElementById('visualization-container').appendChild(renderer.domElement);
+            
+            // Add lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 20, 15);
+            scene.add(directionalLight);
+            
+            // Add grid for reference
+            const gridHelper = new THREE.GridHelper(40, 40, 0x444444, 0x222222);
+            gridHelper.position.y = -0.5;
+            scene.add(gridHelper);
+            
+            // Add coordinate axes
+            const axesHelper = new THREE.AxesHelper(10);
+            scene.add(axesHelper);
+            
+            // Add labels for axes
+            addAxisLabels();
+            
+            // Create initial data points
+            generateDataPoints();
+            
+            // Create initial decision boundary
+            updateDecisionBoundary();
+            
+            // Add event listeners for buttons
+            document.getElementById('btn-perceptron').addEventListener('click', () => switchAlgorithm('perceptron'));
+            document.getElementById('btn-logistic').addEventListener('click', () => switchAlgorithm('logistic'));
+            document.getElementById('btn-svm').addEventListener('click', () => switchAlgorithm('svm'));
+            document.getElementById('btn-reset').addEventListener('click', resetData);
+            document.getElementById('btn-animate').addEventListener('click', animateLearning);
+            
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Start animation loop
+            animate();
+        }
+        
+        // Add axis labels
+        function addAxisLabels() {
+            // X-axis label
+            const xLabel = createTextSprite("Feature 1");
+            xLabel.position.set(18, -1, 0);
+            scene.add(xLabel);
+            
+            // Y-axis label
+            const yLabel = createTextSprite("Feature 2");
+            yLabel.position.set(0, 18, 0);
+            yLabel.rotation.z = Math.PI / 2;
+            scene.add(yLabel);
+        }
+        
+        // Create text sprites for labels
+        function createTextSprite(message) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 256;
+            canvas.height = 128;
+            
+            context.fillStyle = 'rgba(15, 206, 255, 0.8)';
+            context.font = 'bold 40px Arial';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(message, canvas.width/2, canvas.height/2);
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.scale.set(10, 5, 1);
+            
+            return sprite;
+        }
+        
+        // Generate random data points
+        function generateDataPoints() {
+            // Clear existing points
+            points.forEach(point => scene.remove(point));
+            points = [];
+            
+            // Create two classes of points
+            const class1Color = 0xff4d8d; // Pink
+            const class2Color = 0x0fceff; // Blue
+            
+            // Generate class 1 points (roughly top-right quadrant)
+            for (let i = 0; i < 15; i++) {
+                const x = 5 + Math.random() * 10;
+                const y = 5 + Math.random() * 10;
+                createDataPoint(x, y, class1Color, 1);
+            }
+            
+            // Generate class 2 points (roughly bottom-left quadrant)
+            for (let i = 0; i < 15; i++) {
+                const x = -15 + Math.random() * 10;
+                const y = -15 + Math.random() * 10;
+                createDataPoint(x, y, class2Color, -1);
+            }
+            
+            // Add some noise/overlap points
+            for (let i = 0; i < 5; i++) {
+                const x = -5 + Math.random() * 10;
+                const y = -5 + Math.random() * 10;
+                const color = Math.random() > 0.5 ? class1Color : class2Color;
+                const label = color === class1Color ? 1 : -1;
+                createDataPoint(x, y, color, label);
+            }
+        }
+        
+        // Create a single data point
+        function createDataPoint(x, y, color, label) {
+            const geometry = new THREE.SphereGeometry(0.5, 16, 16);
+            const material = new THREE.MeshPhongMaterial({ color: color });
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.position.set(x, y, 0);
+            
+            // Store metadata
+            sphere.userData = { 
+                originalX: x, 
+                originalY: y,
+                label: label,
+                color: color
+            };
+            
+            scene.add(sphere);
+            points.push(sphere);
+            return sphere;
+        }
+        
+        // Update decision boundary based on current algorithm
+        function updateDecisionBoundary() {
+            // Remove old decision boundary
+            if (decisionBoundary) {
+                scene.remove(decisionBoundary);
+                decisionBoundary = null;
+            }
+            
+            // Remove old margin lines (for SVM)
+            marginLines.forEach(line => scene.remove(line));
+            marginLines = [];
+            
+            // Create new decision boundary based on current algorithm
+            if (currentAlgorithm === 'perceptron') {
+                createPerceptronBoundary();
+            } else if (currentAlgorithm === 'logistic') {
+                createLogisticBoundary();
+            } else if (currentAlgorithm === 'svm') {
+                createSVMBoundary();
+            }
+        }
+        
+        // Create perceptron decision boundary
+        function createPerceptronBoundary() {
+            // Calculate line endpoints based on perceptron weights
+            // w1*x + w2*y + b = 0 => y = -(w1*x + b)/w2
+            const w1 = perceptronWeights[0];
+            const w2 = perceptronWeights[1];
+            const b = perceptronBias;
+            
+            // If w2 is very small, use vertical line
+            if (Math.abs(w2) < 0.001) {
+                const x = -b / w1;
+                createVerticalLine(x, 0x0fceff);
+            } else {
+                // Calculate y for x = -20 and x = 20
+                const x1 = -20;
+                const y1 = -(w1 * x1 + b) / w2;
+                
+                const x2 = 20;
+                const y2 = -(w1 * x2 + b) / w2;
+                
+                createLine(x1, y1, x2, y2, 0x0fceff);
+            }
+        }
+        
+        // Create logistic regression decision boundary
+        function createLogisticBoundary() {
+            // Logistic regression uses the same linear equation but with probability interpretation
+            const w1 = logisticWeights[0];
+            const w2 = logisticWeights[1];
+            const b = logisticBias;
+            
+            // If w2 is very small, use vertical line
+            if (Math.abs(w2) < 0.001) {
+                const x = -b / w1;
+                createVerticalLine(x, 0xffaa00);
+            } else {
+                // Calculate y for x = -20 and x = 20
+                const x1 = -20;
+                const y1 = -(w1 * x1 + b) / w2;
+                
+                const x2 = 20;
+                const y2 = -(w1 * x2 + b) / w2;
+                
+                createLine(x1, y1, x2, y2, 0xffaa00);
+                
+                // Add probability gradient visualization
+                createProbabilityGradient(w1, w2, b);
+            }
+        }
+        
+        // Create SVM decision boundary with margins
+        function createSVMBoundary() {
+            const w1 = svmWeights[0];
+            const w2 = svmWeights[1];
+            const b = svmBias;
+            
+            // Calculate margin (distance from decision boundary to margin lines)
+            const margin = 1.5;
+            const norm = Math.sqrt(w1 * w1 + w2 * w2);
+            const marginDistance = margin / norm;
+            
+            // If w2 is very small, use vertical lines
+            if (Math.abs(w2) < 0.001) {
+                const x = -b / w1;
+                createVerticalLine(x, 0x00ff88); // Decision boundary
+                createVerticalLine(x + marginDistance, 0x00ff88, 0.3); // Upper margin
+                createVerticalLine(x - marginDistance, 0x00ff88, 0.3); // Lower margin
+            } else {
+                // Calculate decision boundary line
+                const x1 = -20;
+                const y1 = -(w1 * x1 + b) / w2;
+                
+                const x2 = 20;
+                const y2 = -(w1 * x2 + b) / w2;
+                
+                createLine(x1, y1, x2, y2, 0x00ff88);
+                
+                // Calculate margin lines (parallel to decision boundary)
+                // For line w1*x + w2*y + b = ±margin
+                const bUpper = b + margin;
+                const bLower = b - margin;
+                
+                const y1Upper = -(w1 * x1 + bUpper) / w2;
+                const y2Upper = -(w1 * x2 + bUpper) / w2;
+                const y1Lower = -(w1 * x1 + bLower) / w2;
+                const y2Lower = -(w1 * x2 + bLower) / w2;
+                
+                createLine(x1, y1Upper, x2, y2Upper, 0x00ff88, 0.3);
+                createLine(x1, y1Lower, x2, y2Lower, 0x00ff88, 0.3);
+                
+                // Highlight support vectors (points closest to the boundary)
+                highlightSupportVectors(w1, w2, b, margin);
+            }
+        }
+        
+        // Create a vertical line
+        function createVerticalLine(x, color, opacity = 1.0) {
+            const material = new THREE.LineBasicMaterial({ 
+                color: color, 
+                linewidth: 3,
+                transparent: opacity < 1.0,
+                opacity: opacity
+            });
+            
+            const points = [
+                new THREE.Vector3(x, -20, 0),
+                new THREE.Vector3(x, 20, 0)
+            ];
+            
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            decisionBoundary = new THREE.Line(geometry, material);
+            scene.add(decisionBoundary);
+        }
+        
+        // Create a line between two points
+        function createLine(x1, y1, x2, y2, color, opacity = 1.0) {
+            const material = new THREE.LineBasicMaterial({ 
+                color: color, 
+                linewidth: 3,
+                transparent: opacity < 1.0,
+                opacity: opacity
+            });
+            
+            const points = [
+                new THREE.Vector3(x1, y1, 0),
+                new THREE.Vector3(x2, y2, 0)
+            ];
+            
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            
+            if (opacity < 1.0) {
+                // This is a margin line
+                const line = new THREE.Line(geometry, material);
+                scene.add(line);
+                marginLines.push(line);
+            } else {
+                // This is the decision boundary
+                decisionBoundary = new THREE.Line(geometry, material);
+                scene.add(decisionBoundary);
+            }
+        }
+        
+        // Create probability gradient visualization for logistic regression
+        function createProbabilityGradient(w1, w2, b) {
+            // Create a plane with gradient transparency to show probability
+            const planeGeometry = new THREE.PlaneGeometry(40, 40);
+            const planeMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffaa00,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.1
+            });
+            
+            const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+            plane.position.z = -0.1;
+            scene.add(plane);
+            
+            // Store reference to remove later
+            if (!decisionBoundary) decisionBoundary = plane;
+        }
+        
+        // Highlight support vectors for SVM
+        function highlightSupportVectors(w1, w2, b, margin) {
+            // Find points closest to the decision boundary (within margin)
+            points.forEach(point => {
+                const x = point.position.x;
+                const y = point.position.y;
+                const distance = Math.abs(w1 * x + w2 * y + b) / Math.sqrt(w1 * w1 + w2 * w2);
+                
+                // If point is within margin, highlight it
+                if (distance <= margin * 1.2) {
+                    // Create a highlight ring around the point
+                    const ringGeometry = new THREE.RingGeometry(0.6, 0.8, 16);
+                    const ringMaterial = new THREE.MeshBasicMaterial({ 
+                        color: 0xffff00, 
+                        side: THREE.DoubleSide,
+                        transparent: true,
+                        opacity: 0.7
+                    });
+                    const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                    ring.position.set(x, y, 0.1);
+                    scene.add(ring);
+                    marginLines.push(ring);
+                }
+            });
+        }
+        
+        // Switch between algorithms
+        function switchAlgorithm(algorithm) {
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${algorithm}`).classList.add('active');
+            
+            // Update current algorithm
+            currentAlgorithm = algorithm;
+            
+            // Update algorithm title
+            let title = "";
+            if (algorithm === 'perceptron') title = "Perceptron Algorithm";
+            else if (algorithm === 'logistic') title = "Logistic Regression";
+            else if (algorithm === 'svm') title = "Support Vector Machine (SVM)";
+            document.getElementById('current-algorithm').textContent = title;
+            
+            // Update explanation visibility
+            document.getElementById('perceptron-explanation').style.display = algorithm === 'perceptron' ? 'block' : 'none';
+            document.getElementById('logistic-explanation').style.display = algorithm === 'logistic' ? 'block' : 'none';
+            document.getElementById('svm-explanation').style.display = algorithm === 'svm' ? 'block' : 'none';
+            
+            // Update decision boundary
+            updateDecisionBoundary();
+        }
+        
+        // Reset data points
+        function resetData() {
+            generateDataPoints();
+            updateDecisionBoundary();
+            
+            // Reset algorithm parameters
+            perceptronWeights = [Math.random() * 2 - 1, Math.random() * 2 - 1];
+            perceptronBias = Math.random() * 2 - 1;
+            
+            logisticWeights = [Math.random() * 2 - 1, Math.random() * 2 - 1];
+            logisticBias = Math.random() * 2 - 1;
+            
+            svmWeights = [Math.random() * 2 - 1, Math.random() * 2 - 1];
+            svmBias = Math.random() * 2 - 1;
+        }
+        
+        // Animate the learning process
+        function animateLearning() {
+            if (isAnimating) return;
+            
+            isAnimating = true;
+            document.getElementById('btn-animate').textContent = 'Learning...';
+            document.getElementById('btn-animate').disabled = true;
+            
+            let step = 0;
+            const totalSteps = 50;
+            
+            function learningStep() {
+                if (step >= totalSteps) {
+                    isAnimating = false;
+                    document.getElementById('btn-animate').textContent = 'Animate Learning';
+                    document.getElementById('btn-animate').disabled = false;
+                    return;
+                }
+                
+                // Update algorithm based on current selection
+                if (currentAlgorithm === 'perceptron') {
+                    updatePerceptron();
+                } else if (currentAlgorithm === 'logistic') {
+                    updateLogisticRegression();
+                } else if (currentAlgorithm === 'svm') {
+                    updateSVM();
+                }
+                
+                // Update visualization
+                updateDecisionBoundary();
+                
+                step++;
+                setTimeout(learningStep, 100);
+            }
+            
+            learningStep();
+        }
+        
+        // Update perceptron weights
+        function updatePerceptron() {
+            // Simple perceptron learning rule
+            let madeMistake = false;
+            
+            // Shuffle points for stochastic gradient descent
+            const shuffledPoints = [...points].sort(() => Math.random() - 0.5);
+            
+            shuffledPoints.forEach(point => {
+                const x = point.position.x;
+                const y = point.position.y;
+                const label = point.userData.label;
+                
+                // Calculate prediction
+                const prediction = perceptronWeights[0] * x + perceptronWeights[1] * y + perceptronBias;
+                const predictedLabel = prediction >= 0 ? 1 : -1;
+                
+                // If wrong, update weights
+                if (predictedLabel !== label) {
+                    madeMistake = true;
+                    perceptronWeights[0] += learningRate * label * x;
+                    perceptronWeights[1] += learningRate * label * y;
+                    perceptronBias += learningRate * label;
+                }
+            });
+            
+            // If no mistakes made, we're done
+            return madeMistake;
+        }
+        
+        // Update logistic regression
+        function updateLogisticRegression() {
+            // Simple gradient descent for logistic regression
+            const learningRateLogistic = 0.01;
+            
+            // Calculate gradient
+            let gradW1 = 0, gradW2 = 0, gradB = 0;
+            
+            points.forEach(point => {
+                const x = point.position.x;
+                const y = point.position.y;
+                const label = point.userData.label;
+                
+                // Convert label from {-1, 1} to {0, 1} for logistic regression
+                const trueLabel = label === 1 ? 1 : 0;
+                
+                // Calculate sigmoid (probability of class 1)
+                const z = logisticWeights[0] * x + logisticWeights[1] * y + logisticBias;
+                const probability = 1 / (1 + Math.exp(-z));
+                
+                // Calculate gradient
+                const error = probability - trueLabel;
+                gradW1 += error * x;
+                gradW2 += error * y;
+                gradB += error;
+            });
+            
+            // Update weights
+            const m = points.length;
+            logisticWeights[0] -= learningRateLogistic * gradW1 / m;
+            logisticWeights[1] -= learningRateLogistic * gradW2 / m;
+            logisticBias -= learningRateLogistic * gradB / m;
+        }
+        
+        // Update SVM
+        function updateSVM() {
+            // Simple gradient descent for SVM with hinge loss
+            const learningRateSVM = 0.01;
+            const regularization = 0.01;
+            
+            // Calculate gradient
+            let gradW1 = 0, gradW2 = 0, gradB = 0;
+            
+            points.forEach(point => {
+                const x = point.position.x;
+                const y = point.position.y;
+                const label = point.userData.label;
+                
+                // Calculate hinge loss
+                const margin = label * (svmWeights[0] * x + svmWeights[1] * y + svmBias);
+                
+                if (margin < 1) {
+                    // Point is within margin or misclassified
+                    gradW1 += -label * x;
+                    gradW2 += -label * y;
+                    gradB += -label;
+                }
+            });
+            
+            // Add regularization term (L2 regularization)
+            gradW1 += regularization * svmWeights[0];
+            gradW2 += regularization * svmWeights[1];
+            
+            // Update weights
+            const m = points.length;
+            svmWeights[0] -= learningRateSVM * gradW1 / m;
+            svmWeights[1] -= learningRateSVM * gradW2 / m;
+            svmBias -= learningRateSVM * gradB / m;
+        }
+        
+        // Handle window resize
+        function onWindowResize() {
+            const container = document.getElementById('visualization-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+        
+        // Animation loop
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+            
+            // Rotate camera slowly for better visualization
+            if (!isAnimating) {
+                camera.position.x = 25 * Math.sin(Date.now() * 0.0001);
+                camera.position.z = 25 * Math.cos(Date.now() * 0.0001);
+                camera.lookAt(0, 0, 0);
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
