@@ -113,3 +113,21 @@ SVM is a classification algorithm that finds the optimal hyperplane which separa
 The margin is the distance between the hyperplane and the nearest data points from each class.
 These nearest points are called support vectors, and they completely determine the position of the hyperplane.
 SVM selects the hyperplane that maximizes the margin because it improves generalization and reduces classification error.
+
+Final Answer Summary (Write this in exam)
+Backpropagation is a learning algorithm used to train neural networks by propagating the error backward from the output layer to the input layer. 
+It uses the chain rule to compute gradients for each weight and bias. The algorithm consists of the following steps:
+Forward pass: Compute the output of the network.
+Loss calculation: Compare predicted output with actual output.
+Output error computation: Calculate error at output layer.
+Backward pass: Propagate error backward to all layers.
+Gradient computation: Compute gradients of loss w.r.t weights and biases.
+Weight update: Adjust weights using gradient descent or SGD.
+This process repeats for many epochs until the loss becomes minimal.
+
+MSE vs Cross Entropy:
+MSE                                  Cross-Entropy
+Used for regression      	         Used for classification
+Measures squared error	             Measures probability error
+Penalizes large errors	             Penalizes wrong confident predictions
+Slower learning for classification	 Faster & stable learning
