@@ -139,3 +139,11 @@ and a non-linear activation function can approximate any continuous function to 
 Universal Approximation Theorem.The hidden layer neurons act as basic non-linear building blocks. By combining many neurons, 
 the network can represent highly complex and non-linear relationships between input and output.
 Therefore, neural networks can model almost any real-world problem such as classification, regression, speech, images, etc.
+
+Short 5–mark version (shallow neural network):
+A shallow neural network has one hidden layer between the input and output.
+In the forward pass, inputs are multiplied with weights, biases are added, and activation functions are applied:
+h=σ(W1​x+b1​)
+y=ϕ(W2​h+b2​)
+In training, backpropagation computes gradients of the loss and updates the weights using gradient descent.
+The hidden layer enables the network to learn non-linear relationships, making shallow networks powerful function approximators.
