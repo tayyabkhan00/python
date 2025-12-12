@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inside Machine Learning Models</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tween.js@18.6.4/dist/tween.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            border: 1px solid rgba(100, 200, 255, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a8d8ff;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .visualization-panel {
+            flex: 2;
+            min-width: 300px;
+            background: rgba(10, 15, 40, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(100, 200, 255, 0.2);
+        }
+        
+        .model-title {
+            font-size: 1.8rem;
+            color: #4facfe;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(79, 172, 254, 0.3);
+        }
+        
+        #model-container {
+            width: 100%;
+            height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(5, 10, 25, 0.9);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+        }
+        
+        .controls-panel {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(10, 15, 40, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(100, 200, 255, 0.2);
+        }
+        
+        .algorithm-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .algo-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.2) 100%);
+            border: 2px solid rgba(79, 172, 254, 0.5);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .algo-btn:hover {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.4) 0%, rgba(0, 242, 254, 0.4) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .algo-btn.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-color: #4facfe;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.6);
+        }
+        
+        .input-controls {
+            background: rgba(20, 25, 60, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .input-controls h3 {
+            color: #4facfe;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .slider-container {
+            margin-bottom: 15px;
+        }
+        
+        .slider-container label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a8d8ff;
+        }
+        
+        .slider-container input {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(100, 200, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider-container input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4facfe;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.8);
+        }
+        
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: #4facfe;
+            font-weight: bold;
+        }
+        
+        .compute-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .compute-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.6);
+        }
+        
+        .output-display {
+            background: rgba(20, 25, 60, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+        
+        .output-display h3 {
+            color: #4facfe;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .output-value {
+            font-size: 2rem;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            color: #4facfe;
+            font-weight: bold;
+        }
+        
+        .probability-bar {
+            height: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+        }
+        
+        .probability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b 0%, #4facfe 100%);
+            width: 50%;
+            border-radius: 15px;
+            transition: width 1s ease;
+        }
+        
+        .probability-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #a8d8ff;
+        }
+        
+        .explanation-panel {
+            background: rgba(10, 15, 40, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(100, 200, 255, 0.2);
+            margin-top: 30px;
+        }
+        
+        .explanation-panel h2 {
+            color: #4facfe;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .step-by-step {
+            background: rgba(20, 25, 60, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .step-by-step h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .step h4 {
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+        
+        .step p {
+            color: #a8d8ff;
+            line-height: 1.5;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            color: #ff6b6b;
+            text-align: center;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        .weight-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .weight-item {
+            flex: 1;
+            min-width: 120px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+        }
+        
+        .weight-label {
+            color: #a8d8ff;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .weight-value {
+            color: #4facfe;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid rgba(100, 200, 255, 0.3);
+            color: #a8d8ff;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Inside Machine Learning Models</h1>
+            <p class="subtitle">Visualize how Logistic Regression, Perceptron, and SVM process inputs using weights and biases to produce outputs</p>
+        </header>
+        
+        <div class="main-content">
+            <section class="visualization-panel">
+                <h2 class="model-title" id="current-model">Perceptron Model</h2>
+                <div id="model-container"></div>
+            </section>
+            
+            <section class="controls-panel">
+                <div class="algorithm-selector">
+                    <button class="algo-btn active" id="btn-perceptron">Perceptron</button>
+                    <button class="algo-btn" id="btn-logistic">Logistic Regression</button>
+                    <button class="algo-btn" id="btn-svm">Support Vector Machine</button>
+                </div>
+                
+                <div class="input-controls">
+                    <h3>Input Features</h3>
+                    <div class="slider-container">
+                        <label for="input1">Feature 1 (X₁): <span id="input1-val">0.5</span></label>
+                        <input type="range" id="input1" min="-1" max="1" step="0.01" value="0.5">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="input2">Feature 2 (X₂): <span id="input2-val">0.3</span></label>
+                        <input type="range" id="input2" min="-1" max="1" step="0.01" value="0.3">
+                    </div>
+                    
+                    <button class="compute-btn" id="compute-btn">Compute Output</button>
+                </div>
+                
+                <div class="output-display">
+                    <h3>Model Output</h3>
+                    <div class="output-value" id="output-value">0.00</div>
+                    <div class="probability-bar">
+                        <div class="probability-fill" id="probability-fill"></div>
+                    </div>
+                    <div class="probability-labels">
+                        <span>Class 0 (Negative)</span>
+                        <span>Class 1 (Positive)</span>
+                    </div>
+                    
+                    <div class="weight-display">
+                        <div class="weight-item">
+                            <div class="weight-label">Weight 1 (W₁)</div>
+                            <div class="weight-value" id="weight1-val">0.7</div>
+                        </div>
+                        <div class="weight-item">
+                            <div class="weight-label">Weight 2 (W₂)</div>
+                            <div class="weight-value" id="weight2-val">-0.5</div>
+                        </div>
+                        <div class="weight-item">
+                            <div class="weight-label">Bias (b)</div>
+                            <div class="weight-value" id="bias-val">0.2</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <section class="explanation-panel">
+            <h2>How the Model Works</h2>
+            
+            <div class="step-by-step">
+                <h3>Step-by-Step Computation</h3>
+                <div id="computation-steps">
+                    <div class="step">
+                        <h4>Step 1: Input Features</h4>
+                        <p>The model receives input values X₁ and X₂</p>
+                    </div>
+                    <div class="step">
+                        <h4>Step 2: Multiply by Weights</h4>
+                        <p>Each input is multiplied by its corresponding weight</p>
+                        <div class="formula">X₁ × W₁ + X₂ × W₂</div>
+                    </div>
+                    <div class="step">
+                        <h4>Step 3: Add Bias</h4>
+                        <p>The bias term is added to the weighted sum</p>
+                        <div class="formula">Weighted Sum + b</div>
+                    </div>
+                    <div class="step">
+                        <h4>Step 4: Activation Function</h4>
+                        <p>The result passes through an activation function to produce the final output</p>
+                        <div class="formula" id="activation-formula">Output = Sign(Weighted Sum + b)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step-by-step">
+                <h3>Model Parameters</h3>
+                <div class="step">
+                    <h4>Weights (W₁, W₂)</h4>
+                    <p>Weights determine the importance of each input feature. Positive weights increase the output, negative weights decrease it.</p>
+                </div>
+                <div class="step">
+                    <h4>Bias (b)</h4>
+                    <p>Bias allows the model to shift the decision boundary. It's like the intercept in a linear equation.</p>
+                </div>
+                <div class="step">
+                    <h4>Activation Function</h4>
+                    <p>This function converts the weighted sum into a useful output. Different models use different activation functions.</p>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>Interactive 3D Visualization of Machine Learning Models | Created with Three.js</p>
+            <p>Adjust inputs and click "Compute Output" to see how each model processes data step by step</p>
+        </footer>
+    </div>
+
+    <script>
+        // Global variables
+        let scene, camera, renderer, controls;
+        let input1Sphere, input2Sphere, weight1Cylinder, weight2Cylinder, biasSphere;
+        let sumSphere, outputSphere;
+        let currentModel = 'perceptron';
+        let isAnimating = false;
+        
+        // Model parameters
+        let weights = [0.7, -0.5];
+        let bias = 0.2;
+        let inputValues = [0.5, 0.3];
+        let outputValue = 0;
+        
+        // Initialize the visualization
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x050a19);
+            
+            // Create camera
+            const container = document.getElementById('model-container');
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 5, 15);
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+            
+            // Add lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 20, 15);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            scene.add(directionalLight);
+            
+            // Add a subtle blue fill light
+            const fillLight = new THREE.DirectionalLight(0x4facfe, 0.3);
+            fillLight.position.set(-10, 10, -10);
+            scene.add(fillLight);
+            
+            // Create the 3D model visualization
+            createModelVisualization();
+            
+            // Add event listeners
+            setupEventListeners();
+            
+            // Initialize UI with current values
+            updateUI();
+            
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Start animation loop
+            animate();
+        }
+        
+        // Create the 3D model visualization
+        function createModelVisualization() {
+            // Clear existing visualization
+            clearVisualization();
+            
+            // Create input nodes (spheres)
+            const inputGeometry = new THREE.SphereGeometry(0.8, 32, 32);
+            const inputMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xff6b6b, 
+                emissive: 0x331111,
+                shininess: 100 
+            });
+            
+            input1Sphere = new THREE.Mesh(inputGeometry, inputMaterial);
+            input1Sphere.position.set(-8, 3, 0);
+            input1Sphere.castShadow = true;
+            scene.add(input1Sphere);
+            
+            input2Sphere = new THREE.Mesh(inputGeometry, inputMaterial);
+            input2Sphere.position.set(-8, -3, 0);
+            input2Sphere.castShadow = true;
+            scene.add(input2Sphere);
+            
+            // Create weight connections (cylinders)
+            const weightGeometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 8);
+            
+            // Weight 1 (green for positive, red for negative)
+            const weight1Color = weights[0] >= 0 ? 0x00ff88 : 0xff4444;
+            const weight1Material = new THREE.MeshPhongMaterial({ 
+                color: weight1Color,
+                emissive: weight1Color,
+                emissiveIntensity: 0.2
+            });
+            
+            weight1Cylinder = new THREE.Mesh(weightGeometry, weight1Material);
+            weight1Cylinder.position.set(-4, 3, 0);
+            weight1Cylinder.rotation.z = Math.PI / 2;
+            weight1Cylinder.scale.set(1, 6, 1); // Length based on weight value
+            scene.add(weight1Cylinder);
+            
+            // Weight 2
+            const weight2Color = weights[1] >= 0 ? 0x00ff88 : 0xff4444;
+            const weight2Material = new THREE.MeshPhongMaterial({ 
+                color: weight2Color,
+                emissive: weight2Color,
+                emissiveIntensity: 0.2
+            });
+            
+            weight2Cylinder = new THREE.Mesh(weightGeometry, weight2Material);
+            weight2Cylinder.position.set(-4, -3, 0);
+            weight2Cylinder.rotation.z = Math.PI / 2;
+            weight2Cylinder.scale.set(1, 6, 1);
+            scene.add(weight2Cylinder);
+            
+            // Create multiplication nodes (small cubes)
+            const multiplyGeometry = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+            const multiplyMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xffaa00,
+                emissive: 0x553300
+            });
+            
+            const multiply1 = new THREE.Mesh(multiplyGeometry, multiplyMaterial);
+            multiply1.position.set(-1, 3, 0);
+            multiply1.castShadow = true;
+            scene.add(multiply1);
+            
+            const multiply2 = new THREE.Mesh(multiplyGeometry, multiplyMaterial);
+            multiply2.position.set(-1, -3, 0);
+            multiply2.castShadow = true;
+            scene.add(multiply2);
+            
+            // Create weighted output nodes (spheres)
+            const weightedGeometry = new THREE.SphereGeometry(0.6, 32, 32);
+            const weightedMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xffaa00,
+                emissive: 0x553300
+            });
+            
+            const weighted1 = new THREE.Mesh(weightedGeometry, weightedMaterial);
+            weighted1.position.set(2, 3, 0);
+            weighted1.castShadow = true;
+            scene.add(weighted1);
+            
+            const weighted2 = new THREE.Mesh(weightedGeometry, weightedMaterial);
+            weighted2.position.set(2, -3, 0);
+            weighted2.castShadow = true;
+            scene.add(weighted2);
+            
+            // Create sum node (sphere)
+            const sumGeometry = new THREE.SphereGeometry(1, 32, 32);
+            const sumMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x00aaff,
+                emissive: 0x003355
+            });
+            
+            sumSphere = new THREE.Mesh(sumGeometry, sumMaterial);
+            sumSphere.position.set(5, 0, 0);
+            sumSphere.castShadow = true;
+            scene.add(sumSphere);
+            
+            // Create bias node (sphere)
+            const biasGeometry = new THREE.SphereGeometry(0.7, 32, 32);
+            const biasMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xaa00ff,
+                emissive: 0x330055
+            });
+            
+            biasSphere = new THREE.Mesh(biasGeometry, biasMaterial);
+            biasSphere.position.set(2, 0, 3);
+            biasSphere.castShadow = true;
+            scene.add(biasSphere);
+            
+            // Create output node (sphere)
+            const outputGeometry = new THREE.SphereGeometry(1.2, 32, 32);
+            const outputMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x00ff88,
+                emissive: 0x003322
+            });
+            
+            outputSphere = new THREE.Mesh(outputGeometry, outputMaterial);
+            outputSphere.position.set(9, 0, 0);
+            outputSphere.castShadow = true;
+            scene.add(outputSphere);
+            
+            // Create connections (lines)
+            createConnections();
+            
+            // Add labels
+            addLabels();
+        }
+        
+        // Create connections between nodes
+        function createConnections() {
+            // Connection material
+            const lineMaterial = new THREE.LineBasicMaterial({ 
+                color: 0x4facfe,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            // Input to weight connections
+            createLine(input1Sphere.position, weight1Cylinder.position, lineMaterial);
+            createLine(input2Sphere.position, weight2Cylinder.position, lineMaterial);
+            
+            // Weight to multiplication connections
+            createLine(weight1Cylinder.position, new THREE.Vector3(-1, 3, 0), lineMaterial);
+            createLine(weight2Cylinder.position, new THREE.Vector3(-1, -3, 0), lineMaterial);
+            
+            // Multiplication to weighted output connections
+            createLine(new THREE.Vector3(-1, 3, 0), new THREE.Vector3(2, 3, 0), lineMaterial);
+            createLine(new THREE.Vector3(-1, -3, 0), new THREE.Vector3(2, -3, 0), lineMaterial);
+            
+            // Weighted outputs to sum connection
+            createLine(new THREE.Vector3(2, 3, 0), sumSphere.position, lineMaterial);
+            createLine(new THREE.Vector3(2, -3, 0), sumSphere.position, lineMaterial);
+            
+            // Bias to sum connection
+            createLine(biasSphere.position, sumSphere.position, lineMaterial);
+            
+            // Sum to output connection
+            createLine(sumSphere.position, outputSphere.position, lineMaterial);
+        }
+        
+        // Helper function to create a line between two points
+        function createLine(point1, point2, material) {
+            const points = [point1, point2];
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const line = new THREE.Line(geometry, material);
+            scene.add(line);
+        }
+        
+        // Add text labels to the nodes
+        function addLabels() {
+            // Create canvas for text
+            const createLabel = (text, position, color = 0xffffff) => {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 256;
+                canvas.height = 128;
+                
+                context.fillStyle = 'rgba(0, 0, 0, 0)';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                
+                context.font = 'bold 30px Arial';
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillStyle = `rgb(${color >> 16}, ${(color >> 8) & 255}, ${color & 255})`;
+                context.fillText(text, canvas.width/2, canvas.height/2);
+                
+                const texture = new THREE.CanvasTexture(canvas);
+                const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+                const sprite = new THREE.Sprite(spriteMaterial);
+                sprite.position.copy(position);
+                sprite.scale.set(3, 1.5, 1);
+                
+                scene.add(sprite);
+                return sprite;
+            };
+            
+            // Add labels
+            createLabel("X₁", new THREE.Vector3(-8, 3, 2), 0xff6b6b);
+            createLabel("X₂", new THREE.Vector3(-8, -3, 2), 0xff6b6b);
+            createLabel("W₁", new THREE.Vector3(-4, 3, 2), weights[0] >= 0 ? 0x00ff88 : 0xff4444);
+            createLabel("W₂", new THREE.Vector3(-4, -3, 2), weights[1] >= 0 ? 0x00ff88 : 0xff4444);
+            createLabel("×", new THREE.Vector3(-1, 3, 2), 0xffaa00);
+            createLabel("×", new THREE.Vector3(-1, -3, 2), 0xffaa00);
+            createLabel("X₁×W₁", new THREE.Vector3(2, 3, 2), 0xffaa00);
+            createLabel("X₂×W₂", new THREE.Vector3(2, -3, 2), 0xffaa00);
+            createLabel("Σ", new THREE.Vector3(5, 0, 2), 0x00aaff);
+            createLabel("b", new THREE.Vector3(2, 0, 5), 0xaa00ff);
+            createLabel("Output", new THREE.Vector3(9, 0, 2), 0x00ff88);
+        }
+        
+        // Clear the visualization
+        function clearVisualization() {
+            // In a real implementation, we would track all objects and remove them
+            // For simplicity, we'll just recreate the scene
+            while(scene.children.length > 0) { 
+                scene.remove(scene.children[0]); 
+            }
+            
+            // Re-add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 20, 15);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+            
+            const fillLight = new THREE.DirectionalLight(0x4facfe, 0.3);
+            fillLight.position.set(-10, 10, -10);
+            scene.add(fillLight);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Algorithm selection buttons
+            document.getElementById('btn-perceptron').addEventListener('click', () => switchModel('perceptron'));
+            document.getElementById('btn-logistic').addEventListener('click', () => switchModel('logistic'));
+            document.getElementById('btn-svm').addEventListener('click', () => switchModel('svm'));
+            
+            // Input sliders
+            document.getElementById('input1').addEventListener('input', (e) => {
+                inputValues[0] = parseFloat(e.target.value);
+                document.getElementById('input1-val').textContent = inputValues[0].toFixed(2);
+                updateInputVisualization();
+            });
+            
+            document.getElementById('input2').addEventListener('input', (e) => {
+                inputValues[1] = parseFloat(e.target.value);
+                document.getElementById('input2-val').textContent = inputValues[1].toFixed(2);
+                updateInputVisualization();
+            });
+            
+            // Compute button
+            document.getElementById('compute-btn').addEventListener('click', computeOutput);
+        }
+        
+        // Switch between different models
+        function switchModel(model) {
+            currentModel = model;
+            
+            // Update button states
+            document.querySelectorAll('.algo-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${model}`).classList.add('active');
+            
+            // Update model title
+            let title = "";
+            if (model === 'perceptron') title = "Perceptron Model";
+            else if (model === 'logistic') title = "Logistic Regression Model";
+            else if (model === 'svm') title = "Support Vector Machine Model";
+            document.getElementById('current-model').textContent = title;
+            
+            // Update model parameters based on selected model
+            updateModelParameters();
+            
+            // Update activation function description
+            updateActivationFunction();
+            
+            // Update the visualization
+            createModelVisualization();
+            
+            // Update UI
+            updateUI();
+        }
+        
+        // Update model parameters based on selected model
+        function updateModelParameters() {
+            if (currentModel === 'perceptron') {
+                weights = [0.7, -0.5];
+                bias = 0.2;
+            } else if (currentModel === 'logistic') {
+                weights = [1.2, -0.8];
+                bias = 0.1;
+            } else if (currentModel === 'svm') {
+                weights = [0.9, -0.6];
+                bias = 0.3;
+            }
+            
+            // Update UI displays
+            document.getElementById('weight1-val').textContent = weights[0].toFixed(2);
+            document.getElementById('weight2-val').textContent = weights[1].toFixed(2);
+            document.getElementById('bias-val').textContent = bias.toFixed(2);
+        }
+        
+        // Update activation function description
+        function updateActivationFunction() {
+            const formulaElement = document.getElementById('activation-formula');
+            
+            if (currentModel === 'perceptron') {
+                formulaElement.textContent = "Output = Sign(Weighted Sum + b)";
+            } else if (currentModel === 'logistic') {
+                formulaElement.textContent = "Output = Sigmoid(Weighted Sum + b)";
+            } else if (currentModel === 'svm') {
+                formulaElement.textContent = "Output = Sign(Weighted Sum + b)";
+            }
+        }
+        
+        // Update input visualization based on current values
+        function updateInputVisualization() {
+            // Scale input spheres based on input values
+            if (input1Sphere) {
+                const scale = 0.8 + Math.abs(inputValues[0]) * 0.5;
+                input1Sphere.scale.set(scale, scale, scale);
+                
+                // Change color intensity based on value
+                const intensity = 0.5 + Math.abs(inputValues[0]) * 0.5;
+                input1Sphere.material.emissive.setHex(0x331111 * intensity);
+            }
+            
+            if (input2Sphere) {
+                const scale = 0.8 + Math.abs(inputValues[1]) * 0.5;
+                input2Sphere.scale.set(scale, scale, scale);
+                
+                const intensity = 0.5 + Math.abs(inputValues[1]) * 0.5;
+                input2Sphere.material.emissive.setHex(0x331111 * intensity);
+            }
+        }
+        
+        // Compute the output based on current model and inputs
+        function computeOutput() {
+            if (isAnimating) return;
+            
+            isAnimating = true;
+            
+            // Calculate weighted sum
+            const weightedSum = inputValues[0] * weights[0] + inputValues[1] * weights[1];
+            const sumWithBias = weightedSum + bias;
+            
+            // Apply activation function based on model
+            if (currentModel === 'perceptron') {
+                // Perceptron uses step function
+                outputValue = sumWithBias >= 0 ? 1 : -1;
+            } else if (currentModel === 'logistic') {
+                // Logistic regression uses sigmoid
+                outputValue = 1 / (1 + Math.exp(-sumWithBias));
+            } else if (currentModel === 'svm') {
+                // SVM uses sign function (like perceptron)
+                outputValue = sumWithBias >= 0 ? 1 : -1;
+            }
+            
+            // Animate the computation
+            animateComputation(weightedSum, sumWithBias);
+        }
+        
+        // Animate the computation process
+        function animateComputation(weightedSum, sumWithBias) {
+            // Reset animation state
+            let step = 0;
+            const totalSteps = 5;
+            
+            function nextStep() {
+                if (step >= totalSteps) {
+                    isAnimating = false;
+                    updateOutputDisplay();
+                    return;
+                }
+                
+                // Visualize current step
+                visualizeStep(step, weightedSum, sumWithBias);
+                
+                step++;
+                setTimeout(nextStep, 800);
+            }
+            
+            nextStep();
+        }
+        
+        // Visualize a specific computation step
+        function visualizeStep(step, weightedSum, sumWithBias) {
+            // Reset all animations
+            resetAnimations();
+            
+            // Highlight relevant parts based on step
+            switch(step) {
+                case 0:
+                    // Highlight inputs
+                    animateSphere(input1Sphere, 0xff0000);
+                    animateSphere(input2Sphere, 0xff0000);
+                    break;
+                    
+                case 1:
+                    // Highlight weights
+                    animateCylinder(weight1Cylinder);
+                    animateCylinder(weight2Cylinder);
+                    break;
+                    
+                case 2:
+                    // Highlight multiplication
+                    // Show weighted values
+                    break;
+                    
+                case 3:
+                    // Highlight sum and bias
+                    animateSphere(sumSphere, 0x00aaff);
+                    animateSphere(biasSphere, 0xaa00ff);
+                    break;
+                    
+                case 4:
+                    // Highlight output
+                    animateSphere(outputSphere, 0x00ff88);
+                    break;
+            }
+        }
+        
+        // Animate a sphere with a pulsating effect
+        function animateSphere(sphere, color) {
+            if (!sphere) return;
+            
+            const originalColor = sphere.material.color.getHex();
+            const originalEmissive = sphere.material.emissive.getHex();
+            
+            // Create a pulsating animation
+            let scale = 1;
+            const interval = setInterval(() => {
+                scale = 1 + 0.3 * Math.sin(Date.now() * 0.01);
+                sphere.scale.set(scale, scale, scale);
+                
+                // Pulsate color
+                const intensity = 0.5 + 0.5 * Math.sin(Date.now() * 0.01);
+                sphere.material.emissive.setHex(color);
+                sphere.material.emissiveIntensity = intensity;
+            }, 50);
+            
+            // Stop animation after 1 second
+            setTimeout(() => {
+                clearInterval(interval);
+                sphere.scale.set(1, 1, 1);
+                sphere.material.emissive.setHex(originalEmissive);
+                sphere.material.color.setHex(originalColor);
+            }, 1000);
+        }
+        
+        // Animate a cylinder with a pulsating effect
+        function animateCylinder(cylinder) {
+            if (!cylinder) return;
+            
+            const originalColor = cylinder.material.color.getHex();
+            
+            // Create a pulsating animation
+            let scale = 1;
+            const interval = setInterval(() => {
+                scale = 1 + 0.3 * Math.sin(Date.now() * 0.01);
+                cylinder.scale.y = scale;
+                
+                // Pulsate emissive
+                const intensity = 0.5 + 0.5 * Math.sin(Date.now() * 0.01);
+                cylinder.material.emissiveIntensity = intensity;
+            }, 50);
+            
+            // Stop animation after 1 second
+            setTimeout(() => {
+                clearInterval(interval);
+                cylinder.scale.y = 1;
+                cylinder.material.emissiveIntensity = 0.2;
+            }, 1000);
+        }
+        
+        // Reset all animations
+        function resetAnimations() {
+            // Reset all spheres to original scale
+            if (input1Sphere) input1Sphere.scale.set(1, 1, 1);
+            if (input2Sphere) input2Sphere.scale.set(1, 1, 1);
+            if (sumSphere) sumSphere.scale.set(1, 1, 1);
+            if (biasSphere) biasSphere.scale.set(1, 1, 1);
+            if (outputSphere) outputSphere.scale.set(1, 1, 1);
+            
+            // Reset cylinders
+            if (weight1Cylinder) weight1Cylinder.scale.y = 1;
+            if (weight2Cylinder) weight2Cylinder.scale.y = 1;
+        }
+        
+        // Update the output display
+        function updateOutputDisplay() {
+            // Update output value
+            document.getElementById('output-value').textContent = outputValue.toFixed(2);
+            
+            // Update probability bar (for logistic regression)
+            let probability = 0;
+            if (currentModel === 'logistic') {
+                probability = outputValue;
+            } else {
+                // For perceptron and SVM, convert to probability-like display
+                probability = (outputValue + 1) / 2; // Convert from [-1,1] to [0,1]
+            }
+            
+            // Update probability fill
+            const fillElement = document.getElementById('probability-fill');
+            fillElement.style.width = `${probability * 100}%`;
+            
+            // Update output sphere color based on value
+            if (outputSphere) {
+                let color;
+                if (currentModel === 'logistic') {
+                    // Gradient from red to blue based on probability
+                    color = new THREE.Color().setHSL(0.7 * (1 - probability), 1, 0.5);
+                } else {
+                    // Red for negative, green for positive
+                    color = outputValue >= 0 ? 0x00ff88 : 0xff4444;
+                }
+                
+                outputSphere.material.color = new THREE.Color(color);
+                outputSphere.material.emissive = new THREE.Color(color).multiplyScalar(0.3);
+            }
+        }
+        
+        // Update UI with current values
+        function updateUI() {
+            // Update input displays
+            document.getElementById('input1-val').textContent = inputValues[0].toFixed(2);
+            document.getElementById('input2-val').textContent = inputValues[1].toFixed(2);
+            
+            // Update weight displays
+            document.getElementById('weight1-val').textContent = weights[0].toFixed(2);
+            document.getElementById('weight2-val').textContent = weights[1].toFixed(2);
+            document.getElementById('bias-val').textContent = bias.toFixed(2);
+            
+            // Update input visualization
+            updateInputVisualization();
+        }
+        
+        // Handle window resize
+        function onWindowResize() {
+            const container = document.getElementById('model-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Slowly rotate the entire scene for better visualization
+            if (!isAnimating) {
+                scene.rotation.y = Math.sin(Date.now() * 0.0005) * 0.2;
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
