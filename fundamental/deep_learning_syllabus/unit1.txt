@@ -99,3 +99,17 @@ Hard output (0/1)	Probability output
 Step function	    Sigmoid function
 Not differentiable	Differentiable
 Cannot solve XOR	Can solve XOR with feature mapping
+
+Perceptron vs Logistic Regression:
+Feature	                        Perceptron	                   Logistic Regression
+Activation	                    Step	                       Sigmoid
+Output	                        Hard 0 or 1	                   Probability (0 to 1 continuous)
+Differentiable?              	❌ No	                      ✔ Yes
+Training	                    Perceptron learning rule	   Gradient descent
+Can learn complex boundaries?	❌ No	                      ✔ Yes (soft boundary)
+
+⭐ Perfect 8-Mark Answer Summary(SVM):
+SVM is a classification algorithm that finds the optimal hyperplane which separates classes with maximum margin.
+The margin is the distance between the hyperplane and the nearest data points from each class.
+These nearest points are called support vectors, and they completely determine the position of the hyperplane.
+SVM selects the hyperplane that maximizes the margin because it improves generalization and reduces classification error.
