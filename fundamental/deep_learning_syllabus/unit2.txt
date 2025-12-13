@@ -132,3 +132,30 @@ Key points
 Higher VC dimension → more complex model
 Deep networks have very high VC dimension
 High VC → more risk of overfitting unless properly regularized
+
+Convolutional Neural Networks (CNNs):
+CNNs are designed for image processing
+Key layers
+ Convolution layer → feature extraction
+ ReLU → activation
+ Pooling layer → downsampling
+ Fully connected layer → classification
+Advantages
+ Fewer parameters (weight sharing)
+ Automatically learns features
+ Best for: Image classification, object detection, face recognition
+
+Generative Adversarial Networks (GANs)
+GAN = Generator + Discriminator
+Generator (G)
+Creates fake data.
+Discriminator (D)
+Tries to detect fake vs real data.
+Training = Minimax game
+             𝐺:tries to fool 𝐷
+             D:tries to detect fake
+GANs create:
+ Fake images
+ Art
+ Deepfakes
+ Image-to-image transformation
