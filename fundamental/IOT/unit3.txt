@@ -1,0 +1,127 @@
+Network & Communication Aspects in IoT
+
+IoT devices (sensors, actuators) must communicate wirelessly with each other and with servers. This unit focuses on how 
+data moves efficiently and reliably in IoT networks.
+
+1. Wireless Medium Access Issues
+In IoT, many small devices share the same wireless channel.
+Key Issues:
+1.Collision
+Two nodes transmit at the same time → data lost
+2.Limited bandwidth
+Many devices, but small channel capacity
+3.Energy constraint
+Sensors run on battery → communication must save power
+4.Scalability
+Network should work with thousands of nodes
+5.Hidden node problem
+Two nodes can’t hear each other but collide at receiver
+Goal:
+👉 Efficient, low-power, collision-free communication
+
+2. MAC Protocol Survey (Medium Access Control)
+MAC decides who can transmit and when.
+
+Types of MAC Protocols in IoT
+
+(a) Contention-Based MAC
+Example: CSMA/CA
+Node listens before sending
+Simple, flexible
+❌ Collisions & energy waste
+Used in: Wi-Fi, Zigbee
+
+(b) Schedule-Based MAC
+Example: TDMA
+Time divided into slots
+Each node gets a fixed slot
+✅ No collision, energy efficient
+❌ Needs synchronization
+Used in: Industrial IoT
+
+(c) Hybrid MAC
+Combines CSMA + TDMA
+Balance between flexibility and efficiency
+Important MAC Protocols:
+S-MAC → sleep/wake cycles (energy saving)
+T-MAC → adaptive active time
+IEEE 802.15.4 → base standard for Zigbee, 6LoWPAN
+
+3. Survey of Routing Protocols
+Routing = how data travels from sensor to sink (gateway)
+Challenges:
+Limited energy
+Dynamic topology
+Multi-hop communication
+Types of Routing Protocols
+(a) Data-Centric Routing
+Example: Directed Diffusion
+Based on data interest, not node address
+Efficient for sensor data
+
+(b) Hierarchical Routing
+Example: LEACH
+Nodes form clusters
+Cluster head collects & sends data
+✅ Saves energy
+❌ Cluster head dies faster
+
+(c) Geographic Routing
+Example: GPSR
+Uses node position (location)
+Low overhead
+Needs location info
+Common IoT Routing Protocols:
+RPL (IPv6 routing for low-power networks)
+AODV-based protocols
+LEACH
+
+4. Sensor Deployment & Node Discovery
+Sensor Deployment
+How sensors are placed in the environment.
+Types:
+Deterministic deployment
+Pre-planned (factories, smart buildings)
+Random deployment
+Dropped randomly (forests, disaster areas)
+Node Discovery
+Process by which nodes find neighbors and join the network.
+Steps:
+Node wakes up
+Broadcasts discovery message
+Nearby nodes reply
+Routing tables updated
+Challenges:
+Energy usage
+Dynamic nodes (sleep/wake)
+
+5. Data Aggregation & Dissemination
+Data Aggregation
+Combining data from multiple sensors to reduce redundancy.
+Example:
+Temperature from 10 sensors → average value
+✅ Benefits:
+Reduces communication
+Saves energy
+Less network congestion
+Aggregation Methods:
+Tree-based
+Cluster-based (LEACH)
+Data Dissemination
+How data is distributed to nodes or servers
+Types:
+Sink-based dissemination
+Data sent to central server
+Query-based dissemination
+Sink asks for specific data
+Event-based dissemination
+Data sent only when event occurs
+
+6. One-Line Exam Summary
+Wireless medium access deals with channel sharing and energy efficiency
+MAC protocols control transmission timing
+Routing protocols define paths from sensors to sink
+Sensor deployment affects coverage and connectivity
+Node discovery helps nodes join the network
+Data aggregation reduces redundant data
+Data dissemination controls data flow direction
