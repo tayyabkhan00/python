@@ -1,0 +1,147 @@
+HARDWARE FOR IoT:
+
+1️⃣ Sensors (Heart of IoT)
+What is a Sensor?
+A sensor is a device that detects physical or environmental changes and converts them into electrical signals.
+Common Types of Sensors in IoT
+Temperature sensor → measures heat (LM35, DHT11)
+Humidity sensor → measures moisture
+Light sensor (LDR) → detects light intensity
+Gas sensor → detects gases (MQ series)
+Motion sensor (PIR) → detects movement
+Pressure sensor → measures force/pressure
+Why Sensors are Important?
+They collect real-world data
+Without sensors → IoT has no input
+
+2️⃣ Digital Sensors
+What are Digital Sensors?
+Output data in digital form (0s and 1s)
+Do not require ADC (Analog to Digital Converter)
+Features
+High accuracy
+Less noise
+Easy to interface with microcontrollers
+Examples
+DHT11 / DHT22 → temperature + humidity
+Ultrasonic sensor → distance measurement
+IR sensors
+👉 Exam Tip:
+Digital sensors are preferred in IoT due to accuracy and easy integration.
+
+3️⃣ Actuators (Action Devices)
+What is an Actuator?
+An actuator converts electrical signals into physical action.
+Examples
+Motor → movement
+Relay → switching devices ON/OFF
+LED / Buzzer → indication
+Servo motor → precise angle control
+Sensors vs Actuators
+Sensors	Actuators
+Input devices	Output devices
+Sense environment	Act on environment
+
+4️⃣ RFID (Radio Frequency Identification)
+What is RFID?
+RFID uses radio waves to identify and track objects wirelessly.
+Components
+RFID Tag → attached to object
+RFID Reader → reads tag data
+Antenna → communication
+Backend system → stores data
+Types of RFID Tags
+Passive → no battery (cheap, short range)
+Active → battery powered (long range)
+Applications
+Smart cards
+Attendance systems
+Inventory management
+Toll collection
+
+5️⃣ Wireless Sensor Networks (WSN)
+What is WSN?
+A network of sensor nodes that collect and transmit data wirelessly.
+Components of WSN Node
+Sensor
+Microcontroller
+Radio module
+Power source (battery)
+Characteristics
+Low power consumption
+Self-organizing
+Scalable
+Use Cases
+Environmental monitoring
+Smart agriculture
+Disaster detection
+
+6️⃣ Participatory Sensing Technology
+Meaning
+Data is collected by people using their smart devices (phones, wearables).
+Examples
+Mobile GPS data for traffic apps
+Health data from smartwatches
+Noise level reporting apps
+Key Idea
+➡ Humans become data sensors
+
+EMBEDDED PLATFORMS FOR IoT
+7️⃣ Embedded Computing Basics
+What is Embedded System?
+A dedicated computer system designed for specific tasks.
+Features
+Low power
+Real-time operation
+Limited memory
+Runs firmware
+Components
+Microcontroller / Microprocessor
+Memory
+I/O peripherals
+Power unit
+
+8️⃣ IoT Supported Hardware Platforms
+
+🔹 Arduino
+Microcontroller-based
+Easy programming (C/C++)
+Best for beginners
+Used in sensors & actuators control
+👉 Example: Arduino Uno, Nano
+
+🔹 NetArduino
+Based on .NET framework
+Uses C#
+Less popular than Arduino
+
+🔹 Raspberry Pi
+Single Board Computer
+Runs Linux OS
+Supports Python
+Has HDMI, USB, Wi-Fi
+
+👉 Used for:
+Image processing
+AI + IoT
+Edge computing
+
+🔹 BeagleBone Black
+Similar to Raspberry Pi
+Better for industrial applications
+Real-time processing support
+
+🔹 Intel Galileo
+Intel-based board
+Arduino compatible
+Used in advanced IoT research
+Now mostly discontinued (but still in syllabus)
+
+🔹 ARM Cortex
+Processor architecture (used inside chips)
+Low power + high performance
+Widely used in IoT devices
+👉 Found in:
+STM32
+ESP32
+Smartphones
