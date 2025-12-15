@@ -393,4 +393,106 @@ Location-based routing uses geographic information to forward packets.
 | Hierarchical   | Clustering     | High              | High        |
 | Location-based | Position aware | High              | High        |
 | Flat routing   | Equal nodes    | Low               | Low         |
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sensor Deployment & Node Discovery
 
+Sensor Deployment & Node Discovery are crucial steps in IoT networks. Deployment decides how sensor nodes are placed in 
+the environment, either deterministically or randomly. After deployment, node discovery allows sensors to identify 
+neighboring nodes by exchanging beacon messages. This process helps in forming network topology, enabling routing, 
+and ensuring efficient data communication.
+
+🔷 Sensor Deployment
+What is Sensor Deployment?
+Sensor deployment is the process of placing sensor nodes in a physical environment so that they can sense, communicate, 
+and cover the area effectively.
+
+Types of Sensor Deployment
+
+1️⃣ Deterministic Deployment
+Sensors are placed manually at fixed locations
+Pre-planned positions
+Used in:
+Smart buildings
+Industrial IoT
+Hospitals
+Advantages:
+Better coverage
+Easy maintenance
+Predictable network
+Disadvantages:
+High installation cost
+Not suitable for dangerous areas
+
+2️⃣ Random Deployment
+Sensors are randomly scattered
+Example: dropped from drones or aircraft
+Used in:
+Forest monitoring
+Disaster zones
+Battlefield surveillance
+Advantages:
+Quick deployment
+Works in inaccessible areas
+Disadvantages:
+Uneven coverage
+Needs extra routing & discovery effort
+
+Deployment Factors:
+| Factor       | Meaning                    |
+| ------------ | -------------------------- |
+| Coverage     | Area sensed by nodes       |
+| Connectivity | Nodes can communicate      |
+| Density      | Number of sensors per area |
+| Cost         | Hardware + maintenance     |
+| Environment  | Terrain, obstacles         |
+
+Proper sensor deployment ensures maximum coverage and reliable communication.
+
+Deployment Challenges:
+Node failure
+Energy limitation
+Harsh environment
+Network scalability
+
+🔷 Node Discovery
+
+What is Node Discovery?
+Node discovery is the process by which sensor nodes identify their neighboring nodes and build a network after deployment.
+Why Node Discovery is Needed?
+To create network topology
+To enable routing
+To support data aggregation
+To detect new or failed nodes
+
+Steps in Node Discovery (Easy Flow)
+1️⃣ Node powers ON
+2️⃣ Sends HELLO / beacon message
+3️⃣ Nearby nodes receive it
+4️⃣ Nodes exchange IDs & signal strength
+5️⃣ Neighbor table is created
+
+Types of Node Discovery
+1️⃣ Single-hop Discovery
+Nodes discover direct neighbors
+Simple & fast
+2️⃣ Multi-hop Discovery
+Nodes learn about nodes beyond direct range
+Needed for large networks
+
+Node Discovery Techniques
+🔹 Beacon-based Discovery
+Nodes periodically send beacons
+Common in WSN
+🔹 Energy-aware Discovery
+Discovery scheduled to save battery
+🔹 Mobility-aware Discovery
+Used when nodes move (wearables, vehicles)
+
+Challenges in Node Discovery
+Energy consumption
+Collision of discovery messages
+Large number of nodes
+Dynamic topology
+
+Relation Between Deployment & Discovery (Exam Gold ✨)
+After deployment, node discovery helps sensors find neighbors, form routes, and start communication.
