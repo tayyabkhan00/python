@@ -281,3 +281,116 @@ Disadvantages:
 ❌ Complex design
 📌 Best choice for modern IoT
 
+⚠️ Major MAC Challenges in IoT
+| Issue               | Description                      |
+| ------------------- | -------------------------------- |
+| Collision           | Multiple nodes transmit together |
+| Overhearing         | Node receives unwanted packets   |
+| Idle listening      | Listening without data           |
+| Hidden node problem | Nodes cannot detect each other   |
+| Synchronization     | Required in TDMA                 |
+
+🧠 Comparison Table
+| Feature           | CSMA   | TDMA | Hybrid    |
+| ----------------- | ------ | ---- | --------- |
+| Collision         | Yes    | No   | Low       |
+| Energy efficiency | Low    | High | High      |
+| Synchronization   | No     | Yes  | Partial   |
+| Scalability       | Medium | High | Very High |
+
+🔑 One-Line Memory Trick
+CSMA → Simple but wasteful
+TDMA → Organized and efficient
+Hybrid → Smart and adaptive
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+📡 Survey of Routing Protocols in IoT Networks
+
+Routing protocols in IoT are used to efficiently transmit data from sensor nodes to the sink. Due to limited energy and 
+resources, protocols are designed to minimize power consumption and improve scalability. Common routing protocols include 
+data-centric, hierarchical, and location-based routing. Hierarchical protocols like LEACH are energy efficient, while 
+data-centric protocols reduce redundancy. Proper routing increases network lifetime and reliability.
+
+🔹 What is Routing in IoT?
+Routing is the process of selecting paths for data to travel from sensor nodes → sink / base station.
+🔑 Why routing is important in IoT?
+Nodes have low power
+Network is large-scale
+Communication is multi-hop
+Node failure is common
+👉 Good routing = longer network lifetime + reliable data delivery
+
+Challenges in IoT Routing
+Limited battery power
+Low memory & processing capacity
+Dynamic topology
+Scalability (thousands of nodes)
+Data redundancy
+
+🔹 Classification of IoT Routing Protocols
+
+1️⃣ Data-Centric Routing Protocols
+🔸 Concept:
+Data is requested using attributes, not node addresses
+Nodes send data only if it matches query
+🔸 Working:
+Sink sends interest (e.g., temperature > 30°C)
+Nodes matching data respond
+Data is aggregated & forwarded
+🔸 Example:
+Directed Diffusion
+🔸 Advantages:
+✔ Reduces redundant transmissions
+✔ Energy efficient
+🔸 Limitation:
+❌ Not suitable for real-time data
+❌ High overhead during query flooding
+📌 Exam line:
+Data-centric routing focuses on data attributes rather than node IDs.
+
+2️⃣ Hierarchical (Cluster-based) Routing Protocols
+🔸 Concept:
+Network divided into clusters
+Each cluster has a Cluster Head (CH)
+CH collects & forwards data to sink
+🔸 Example:
+LEACH (Low-Energy Adaptive Clustering Hierarchy)
+🔸 Working of LEACH:
+Nodes self-organize into clusters
+One node becomes CH
+Member nodes send data to CH
+CH aggregates data & sends to sink
+🔸 Advantages:
+✔ Energy efficient
+✔ Scalable
+✔ Reduces communication cost
+🔸 Limitations:
+❌ Cluster head may die early
+❌ Not ideal for highly dynamic networks
+📌 Exam line:
+Hierarchical routing improves scalability and reduces energy consumption.
+
+3️⃣ Location-Based Routing Protocols
+🔸 Concept:
+Uses geographical position of nodes
+Distance estimation via GPS or signal strength
+🔸 Example:
+GEAR (Geographic and Energy Aware Routing)
+🔸 Working:
+Data forwarded to nodes closer to destination
+Chooses path based on distance + energy level
+🔸 Advantages:
+✔ Reduces routing overhead
+✔ Efficient for large networks
+🔸 Limitations:
+❌ Requires location hardware
+❌ GPS increases cost & power usage
+📌 Exam line:
+Location-based routing uses geographic information to forward packets.
+
+| Protocol Type  | Key Idea       | Energy Efficiency | Scalability |
+| -------------- | -------------- | ----------------- | ----------- |
+| Data-centric   | Query-based    | Medium            | Medium      |
+| Hierarchical   | Clustering     | High              | High        |
+| Location-based | Position aware | High              | High        |
+| Flat routing   | Equal nodes    | Low               | Low         |
+
