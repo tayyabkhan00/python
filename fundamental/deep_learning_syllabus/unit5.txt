@@ -105,3 +105,19 @@ Cancer detection from images
 Drug discovery
 Exam line:
 👉 Deep learning helps in analyzing complex biological data efficiently.
+
+8. Face Recognition
+What is Face Recognition?
+Identify or verify a person from an image
+Steps:
+Face detection
+Feature extraction
+Matching with database
+Models used:
+CNN
+DeepFace
+FaceNet
+Applications:
+Mobile phone unlock
+Security systems
+Attendance systems
