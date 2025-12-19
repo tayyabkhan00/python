@@ -121,3 +121,17 @@ Applications:
 Mobile phone unlock
 Security systems
 Attendance systems
+
+9. Scene Understanding
+What is Scene Understanding?
+Understanding the entire image, not just objects.
+Includes:
+Object detection
+Relationships
+Context
+Example:
+“A person riding a bike on a road”
+Used in:
+Autonomous vehicles
+Robotics
+Smart cameras
