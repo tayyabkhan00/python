@@ -1,0 +1,15 @@
+OPTIMIZATION AND GENERALIZATION
+
+1. Optimization in Deep Learning
+
+Optimization = how a neural network learns best weights
+Goal: Minimize loss function (error between predicted & actual output)
+We update weights using gradients (from backpropagation)
+Common Optimizers
+Gradient Descent – slow, uses full dataset
+SGD (Stochastic Gradient Descent) – fast, noisy
+Momentum – speeds up learning
+Adam – most popular (adaptive + momentum)
+Exam Point (5 marks):
+Optimization in deep learning is the process of adjusting model parameters to minimize the loss function using 
+gradient-based algorithms like SGD and Adam.
