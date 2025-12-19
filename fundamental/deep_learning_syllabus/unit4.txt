@@ -162,3 +162,14 @@ Remembers long-term dependencies
 Stable gradients
 Exam Line:
 LSTM is a special type of RNN capable of learning long-term dependencies using gated mechanisms.
+
+8. Recurrent Neural Network Language Models
+Used to predict next word in a sentence
+Example
+Input: “I am going”
+Output: “home”
+Applications
+Chatbots
+Auto-complete
+Speech recognition
+Probability Based:P(wt​∣w1​,w2​,...,wt−1​)
