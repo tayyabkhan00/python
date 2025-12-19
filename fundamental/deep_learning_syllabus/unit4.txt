@@ -173,3 +173,28 @@ Chatbots
 Auto-complete
 Speech recognition
 Probability Based:P(wt​∣w1​,w2​,...,wt−1​)
+
+9. Word-Level RNNs
+Operate on entire words, not characters
+Use word embeddings (Word2Vec, GloVe)
+Pros
+Better semantic understanding
+Cons
+Large vocabulary size
+
+10. Deep Reinforcement Learning (DRL)
+Learning by interaction + reward
+Components
+Agent
+Environment
+Action
+Reward
+Combines
+Deep Learning + Reinforcement Learning
+
+Applications
+Games (AlphaGo)
+Robotics
+Self-driving cars
+Exam Definition:
+Deep Reinforcement Learning uses deep neural networks to approximate policies and value functions in reinforcement learning.
