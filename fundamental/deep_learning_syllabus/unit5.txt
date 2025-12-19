@@ -38,3 +38,17 @@ Applications:
 Self-driving cars
 Surveillance
 Face detection
+
+3. Audio – WaveNet
+What is WaveNet?
+WaveNet is a deep learning model for audio generation.
+Developed by Google DeepMind
+What does it do?
+Generates raw audio waveforms
+Produces very natural human-like speech
+Applications:
+Text-to-Speech (TTS)
+Voice assistants (Google Assistant)
+Music generation
+Key idea:
+👉 Models audio sample-by-sample using deep neural networks.
