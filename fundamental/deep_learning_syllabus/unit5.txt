@@ -135,3 +135,16 @@ Used in:
 Autonomous vehicles
 Robotics
 Smart cameras
+
+10. Gathering Image Captions
+What is Image Captioning?
+Automatically generating a sentence describing an image.
+Model architecture:
+CNN → extract image features
+RNN / LSTM → generate text
+Example:
+📷 Image → “A dog playing in the park”
+Applications:
+Helping visually impaired people
+Image search
+Social media
