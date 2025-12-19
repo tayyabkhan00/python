@@ -92,3 +92,16 @@ Improves accuracy using shared features
 Application:
 Autonomous driving
 Surveillance systems
+
+7. Bioinformatics
+What is Bioinformatics?
+Applying deep learning to biological and medical data.
+Uses:
+DNA sequence analysis
+Protein structure prediction
+Disease diagnosis
+Examples:
+Cancer detection from images
+Drug discovery
+Exam line:
+👉 Deep learning helps in analyzing complex biological data efficiently.
