@@ -150,3 +150,15 @@ Has memory (previous state affects current output)
 Problem
 Vanishing gradient
 Equation:ht​=f(ht−1​,xt​)
+
+7. Long Short-Term Memory (LSTM)
+LSTM solves RNN’s memory problem 🧠
+Gates
+Forget gate
+Input gate
+Output gate
+Advantages
+Remembers long-term dependencies
+Stable gradients
+Exam Line:
+LSTM is a special type of RNN capable of learning long-term dependencies using gated mechanisms.
