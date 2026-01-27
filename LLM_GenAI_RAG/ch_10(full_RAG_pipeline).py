@@ -2,7 +2,7 @@ from google import genai
 import numpy as np
 import faiss
 
-client = genai.Client(api_key="AIzaSyBNA4Zy08UjqvM_p7btBTgY2ZCr_8rmQ8c")
+client = genai.Client(api_key="your_gemini_api_key")
 
 documents = [
     "RAG helps large language models use external knowledge.",
