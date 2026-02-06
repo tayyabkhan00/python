@@ -1,2 +1,16 @@
-data/cifar-10-python.tar.gz
+# macOS
+.DS_Store
+
+# Data / ML
 data/
+datasets/
+*.tar.gz
+*.zip
+*.csv
+*.pkl
+*.pt
+*.h5
+
+# Python
+__pycache__/
+*.pyc
