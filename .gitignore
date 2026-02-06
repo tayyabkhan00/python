@@ -1,16 +1,15 @@
+# Data & models
+*.csv
+*.xlsx
+*.pth
+*.h5
+*.pt
+*.png
+data/
+datasets/
+
 # macOS
 .DS_Store
 
-# Data / ML
-data/
-datasets/
-*.tar.gz
-*.zip
-*.csv
-*.pkl
-*.pt
-*.h5
-
 # Python
 __pycache__/
-*.pyc
