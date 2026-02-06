@@ -1,14 +1,21 @@
-class Employee:
-    def __init__(self,id,name):
+class animal:
+    def __init__(self,name):
         self.name=name
-        self.id=id
-    def showdetails(self):
-        print(f"the name of employee:{self.name}is{self.id}")
-class Programmer(Employee):
-    def showlanguage(self):
-        print("the language is default")
-e1=Employee("rohan",10)
-e1.showdetails()
-e2=Programmer("rehan",20)
-e2.showdetails()
-e2.showlanguage()
+
+    def sound(self):
+        return f"the sound of {self.name}"
+
+    def eat(self):
+        print(f"{self.name} is eating")
+    
+    def run(self):
+        print(f"the {self.name} is running")
+class cat(animal):
+    def sound(self):
+        return super().sound() + " is meow"
+
+c=cat("billa")
+print(c.sound())
+c.eat()
+c.run()
+
