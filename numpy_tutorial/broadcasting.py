@@ -9,5 +9,5 @@ a = np.array([[1, 2, 3],
 b = np.array([10, 20, 30])
 
 print(a + b)
-# Broadcasting with different shapes
 
+# Broadcasting with different shapes

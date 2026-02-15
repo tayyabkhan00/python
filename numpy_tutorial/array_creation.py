@@ -1,7 +1,7 @@
 import numpy as np
 
 #first method
-'''print('conversion from other python structures(list,tuples)')
+print('conversion from other python structures(list,tuples)')
 print("\n")
 listarray=np.array([[0,1,2,3],[4,5,6,7],[8,9,10,11]])
 print(listarray)
@@ -35,6 +35,6 @@ print(arr.reshape(3,33))
 print(arr.ravel())
 print("\n")
 
-'''
+
 np.random.seed(42)
 print('random number generation:')
