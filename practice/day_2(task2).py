@@ -48,4 +48,3 @@ outliers = df[(df["fare"] < lower_bound) | (df["fare"] > upper_bound)]
 len(outliers)
 
 df["Fare_log"] = np.log1p(df["fare"])
-print(df["Fare_log"])
