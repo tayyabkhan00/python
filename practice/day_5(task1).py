@@ -53,9 +53,9 @@ from sklearn.metrics import r2_score
 
 model=LinearRegression()
 model.fit(X_train_scaled,y_train)
-predict=model.predict(X_test_scaled)
+lr_predict=model.predict(X_test_scaled)
 
-print("r2 socre:", r2_score(y_test,predict))
+print("r2 socre:", r2_score(y_test,lr_predict))
 
 # Ridge
 from sklearn.linear_model import Ridge
@@ -77,12 +77,17 @@ lasso_pred = lasso.predict(X_test_scaled)
 
 print("Lasso R2:", r2_score(y_test, lasso_pred))
 
-# Cross Validation (REAL EVALUATION)
+# cross-validation
+from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import Ridge
+from sklearn.preprocessing import StandardScaler
+
+pipeline = make_pipeline(StandardScaler(), Ridge(alpha=10))
 
 cv_scores = cross_val_score(
-    Ridge(alpha=10),
-    scaler.fit_transform(X),
+    pipeline,
+    X,
     y,
     cv=5,
     scoring="r2"
@@ -90,3 +95,4 @@ cv_scores = cross_val_score(
 
 print("CV Scores:", cv_scores)
 print("Average CV R2:", cv_scores.mean())
+
