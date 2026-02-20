@@ -41,3 +41,72 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
 print("Classification Report:\n", classification_report(y_test, y_pred))
+
+
+
+# Confusion matrix is calculated ONLY on test data.
+# |          | Predicted 0 | Predicted 1 |
+# | -------- | ----------- | ----------- |
+# | Actual 0 | 3           | 1           |
+# | Actual 1 | 0           | 2           |
+
+# 🔹 Precision
+
+# Question:
+
+# Out of all customers predicted as churn, how many actually churned?
+
+# From matrix:
+
+# Model predicted churn = (1 + 2) = 3 people
+# But actually churned = 2
+
+# So:
+# Precision = 2/3
+
+# Meaning:
+# When model says "customer will churn", it's correct 67% of the time.
+
+# 🔹 Recall
+
+# Question:
+
+# Out of all actual churn customers, how many did we catch?
+
+# Actual churn customers = (0 + 2) = 2
+# Model caught = 2
+
+# So:
+# Recall = 2/2 = 1.0
+
+# Meaning:
+# Model caught ALL churn customers.
+
+# 🔹 F1 Score
+
+# F1 is balance between precision and recall.
+
+# If:
+
+# Precision high
+
+# Recall high
+
+# Then F1 high.
+
+# If one low → F1 drops.
+
+# It’s just a balanced score.
+
+# 🔹 Support
+
+# Support means:
+# How many actual samples of that class exist.
+
+# From matrix:
+
+# Class 0 support = 4 (3+1)
+
+# Class 1 support = 2 (0+2)
+
+# So support tells how many true examples exist.
