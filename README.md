@@ -177,7 +177,7 @@ This repository is built to:
 - Improve problem-solving skills
 - Track continuous learning progress
 
-# 📌 How to Use
+### 📌 How to Use
 
 1.Clone the repository:
 ```bash
@@ -188,7 +188,7 @@ git clone https://github.com/tayyabkhan00/python.git
 
 3.Run Jupyter Notebook or Python scripts inside that folder.
 
-# 📈 Learning Approach
+### 📈 Learning Approach
 
 - Theory → Implementation → Experimentation → Visualization → Optimization
 - Focus on understanding algorithms deeply
