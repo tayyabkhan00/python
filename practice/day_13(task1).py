@@ -50,7 +50,7 @@ scores = cross_val_score(rf, X, y, cv=5, scoring="f1")
 print("F1 scores:", scores)
 print("Average F1:", scores.mean())
 
-df["churn"].value_counts()
+print(df["churn"].value_counts(normalize=True)* 100)
 
 rf = RandomForestClassifier(
     n_estimators=100,
