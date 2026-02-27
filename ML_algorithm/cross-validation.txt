@@ -1,0 +1,44 @@
+Cross-validation helps you:
+Choose best alpha
+Choose best hyperparameters
+Choose best model
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import Ridge
+
+param = {'alpha':[0.01,0.1,1,10,100]}
+grid = GridSearchCV(Ridge(), param, cv=5)
+grid.fit(X,y)
+
+print(grid.best_params_)
+
+This automatically selects best alpha.
+
+Regularization → Controls model complexity
+Cross-validation → Evaluates model reliability
+
+📌 What Cross Validation Actually Does
+It:
+Splits data into multiple folds (e.g., 5 folds)
+Trains model on different subsets
+Evaluates on different validation sets
+Gives average performance
+
+🎯 Why It Is Important?
+🔴 Detect Overfitting
+If:
+Train accuracy = high
+CV score = much lower
+→ Overfitting detected
+
+🔵 Detect Underfitting
+If:
+Train accuracy = low
+CV score = also low
+→ Model too simple
+
+🧠 Most Important Role:
+Cross-validation helps you:
+Choose best alpha
+Choose best hyperparameters
+Choose best model
