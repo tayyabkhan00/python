@@ -38,7 +38,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-# scaling as Regularization requires scaling.
+# scaling: as Regularization requires scaling.
 # ⚠️ If you skip scaling → your Ridge/Lasso results will be wrong.
 from sklearn.preprocessing import StandardScaler
 
