@@ -20,7 +20,8 @@ It serves as a complete practice hub covering:
 ├── ML_algorithm
 ├── dash_tutorial
 ├── data_cleaning
-├── freetime_projects
+├── deep_learning
+├── fundamental
 ├── leetcode_practice/Basic
 ├── matplotlib_tutorial
 ├── numpy_tutorial
@@ -109,6 +110,14 @@ It serves as a complete practice hub covering:
 - Imbalance handling
 - Algorithm comparison
 
+### 🧠 Deep Learning
+
+- Neural Networks
+- CNN/RNN
+- Activation Functions
+- Backpropagation
+- Loss Functions
+
 ### 🌐 API_tutorial
 
 - REST API development
@@ -121,6 +130,13 @@ It serves as a complete practice hub covering:
 - Interactive ML web apps
 - Model deployment dashboards
 - Data input forms
+
+### 🧩 Fundamentals
+
+This folder contains text notes explaining core concepts of:
+- Machine Learning
+- Deep Learning
+- Important theoretical concepts
 
 ### 📊 dash_tutorial
 
