@@ -1,0 +1,44 @@
+Standardization → done before training
+BatchNorm → done inside the neural network during training
+
+That’s a major difference.
+
+Standardization:
+Mean and std calculated from entire dataset
+Fixed values
+
+BatchNorm:
+Mean and std calculated from each mini-batch
+Changes every iteration
+
+That’s why it’s called Batch Normalization.
+
+🔥 So Why Different Name?
+
+Because:
+If they called it “standardization”:
+It sounds like simple preprocessing.
+But BatchNorm is a layer inside neural network.
+It has parameters.
+It affects gradient flow.
+It changes during training.
+So it needed a new name.
+
+🎯 Short Interview Answer
+“Batch Normalization is different from standardization because it is applied per mini-batch during training and includes 
+learnable scaling and shifting parameters.”
+
+🧠 One More Important Insight
+
+Actually…
+BatchNorm is not mainly about normalization.
+
+Its real benefit is:
+👉 Smoother loss landscape
+👉 Better gradient flow
+👉 Faster convergence
+
+Normalization is just the mechanism.
+
+📌 Interview Answer (Short Version)
+“Batch Normalization normalizes the output of each layer using mini-batch statistics to stabilize and speed up training.”

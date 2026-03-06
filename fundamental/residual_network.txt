@@ -1,0 +1,56 @@
+Residual Networks (ResNet) 
+
+Now this is more interesting 🔥
+
+🧠 Problem in Deep Networks
+When networks become very deep (like 50, 100 layers):
+Training error increases
+Gradients vanish
+Network stops learning
+This is called Degradation Problem
+
+🎯 Simple Idea of ResNet
+
+Instead of learning:
+Output=F(x)
+ResNet learns:
+Output=F(x)+x
+
+This is called Skip Connection
+
+🧃 Real-Life Example
+Suppose you are learning mathematics.
+Instead of solving full problem again,
+you say:
+👉 “Let me keep original answer and just learn the difference.”
+That difference = Residual.
+
+🏗 Architecture Idea
+
+Normal network:
+
+Input → Layer1 → Layer2 → Output
+
+ResNet:
+
+Input → Layer1 → Layer2
+   ↘______________↗
+          Add
+
+It skips layers and adds input again.
+
+🖼 Example: ResNet Model
+One famous model:
+🔥 ResNet
+Very popular in image classification.
+
+📌 Interview Short Answer
+
+“Residual Networks use skip connections to allow gradients to flow directly through the network, solving vanishing gradient
+and enabling very deep architectures.”
+
+If interviewer asks:
+👉 “Why ResNet works better than plain CNN?”
+
+You say:
+“Because skip connections allow gradients to flow directly, preventing vanishing gradients and enabling deeper networks.”

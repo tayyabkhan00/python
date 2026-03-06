@@ -1,0 +1,155 @@
+UNIT – 1 : INTRODUCTION (Deep Learning)
+
+1. Introduction to Machine Learning
+What is Machine Learning?
+Machine Learning (ML) is a method where a computer learns patterns from data instead of being manually programmed.
+Simple Example:
+Give many images of cats → ML learns the pattern → Predicts “cat” for new image.
+Types of ML
+Supervised Learning – Labeled data (e.g., spam / not spam).
+Unsupervised Learning – No labels (e.g., clustering customers).
+Reinforcement Learning – Learning by trial & reward (like playing games).
+
+2. Linear Models
+Linear models predict using a line/hyperplane:
+𝑦=𝑤^𝑇*𝑥+𝑏
+Where →
+w = weights
+b = bias
+x = input features
+
+2.1 Logistic Regression
+Used for binary classification (Yes/No).
+Key Idea:
+Logistic Regression outputs probability using sigmoid:
+𝜎(𝑧)=1/1+𝑒^−𝑧
+Decision:
+If probability > 0.5 → Class 1
+Else → Class 0
+
+2.2 Perceptron
+The simplest neural network (1 neuron).
+Working:
+Take weighted sum:
+𝑧=𝑤^𝑇𝑥+𝑏
+Apply step function:
+If z > 0 → 1
+Else → 0
+Perceptron Limitation:
+Cannot solve non-linear problems (like XOR).
+
+2.3 Support Vector Machines (SVMs)
+SVM finds the best separating line (hyperplane) between two classes.
+Goal:
+Maximize margin (distance between line and nearest points).
+Diagram (simple):
+Class 1: o o o
+               \   <-- decision boundary
+Class 2: x x x
+Important Terms
+Support Vectors → Points closest to boundary
+Kernel Trick → Converts non-linear data into linear form
+
+3. INTRO TO NEURAL NETWORKS
+3.1 What a Shallow Neural Network Computes
+A shallow network = 1 hidden layer.
+Diagram
+Input → [Hidden Layer] → Output
+Mathematical Form:
+Hidden layer:h=σ(W1​x+b1​)
+Output layer:y=σ(W2​h+b2​)
+Neural nets learn weights that turn inputs → useful features → predictions.
+
+4. TRAINING A NETWORK
+Training = finding best weights using loss functions + backpropagation + SGD.
+
+4.1 Loss Functions
+Tell how “wrong” the model is.
+Common Ones:
+MSE (Mean Squared Error) → Regression
+Cross-Entropy Loss → Classification
+
+4.2 Backpropagation
+Simple meaning:
+Backprop tells each weight how much it contributed to the error and how to update it.
+Steps (easy):
+Do forward pass → get prediction
+Compare with actual → compute loss
+Send error backward → compute gradients
+Update weights
+
+4.3 Stochastic Gradient Descent (SGD)
+SGD updates weights using:w=w−η⋅∂w/∂L​
+Where:
+η (eta) = learning rate
+L = loss
+gradient = direction of increasing error
+SGD uses one sample at a time, making it fast.
+
+5. Neural Networks as Universal Function Approximators
+The Universal Approximation Theorem
+A neural network with one hidden layer can approximate ANY continuous function.
+Meaning →
+Given enough neurons, a neural network can learn almost any pattern (image → label, audio → text, etc.).
+
+EXAM-ORIENTED SHORT NOTES
+✔ Perceptron vs Logistic Regression
+Perceptron	        Logistic Regression
+Hard output (0/1)	Probability output
+Step function	    Sigmoid function
+Not differentiable	Differentiable
+Cannot solve XOR	Can solve XOR with feature mapping
+
+Perceptron vs Logistic Regression:
+Feature	                        Perceptron	                   Logistic Regression
+Activation	                    Step	                       Sigmoid
+Output	                        Hard 0 or 1	                   Probability (0 to 1 continuous)
+Differentiable?              	❌ No	                      ✔ Yes
+Training	                    Perceptron learning rule	   Gradient descent
+Can learn complex boundaries?	❌ No	                      ✔ Yes (soft boundary)
+
+⭐ Perfect 8-Mark Answer Summary(SVM):
+SVM is a classification algorithm that finds the optimal hyperplane which separates classes with maximum margin.
+The margin is the distance between the hyperplane and the nearest data points from each class.
+These nearest points are called support vectors, and they completely determine the position of the hyperplane.
+SVM selects the hyperplane that maximizes the margin because it improves generalization and reduces classification error.
+
+Final Answer Summary (Write this in exam)
+Backpropagation is a learning algorithm used to train neural networks by propagating the error backward from the output layer to the input layer. 
+It uses the chain rule to compute gradients for each weight and bias. The algorithm consists of the following steps:
+Forward pass: Compute the output of the network.
+Loss calculation: Compare predicted output with actual output.
+Output error computation: Calculate error at output layer.
+Backward pass: Propagate error backward to all layers.
+Gradient computation: Compute gradients of loss w.r.t weights and biases.
+Weight update: Adjust weights using gradient descent or SGD.
+This process repeats for many epochs until the loss becomes minimal.
+
+MSE vs Cross Entropy:
+MSE                                  Cross-Entropy
+Used for regression      	         Used for classification
+Measures squared error	             Measures probability error
+Penalizes large errors	             Penalizes wrong confident predictions
+Slower learning for classification	 Faster & stable learning
+
+⭐ 8. Short Answer (neural network):
+Short 6–8 line answer:
+A neural network is called a universal function approximator because a feed-forward network with at least one hidden layer
+and a non-linear activation function can approximate any continuous function to any degree of accuracy. This is known as the 
+Universal Approximation Theorem.The hidden layer neurons act as basic non-linear building blocks. By combining many neurons, 
+the network can represent highly complex and non-linear relationships between input and output.
+Therefore, neural networks can model almost any real-world problem such as classification, regression, speech, images, etc.
+
+Short 5–mark version (shallow neural network):
+A shallow neural network has one hidden layer between the input and output.
+In the forward pass, inputs are multiplied with weights, biases are added, and activation functions are applied:
+h=σ(W1​x+b1​)
+y=ϕ(W2​h+b2​)
+In training, backpropagation computes gradients of the loss and updates the weights using gradient descent.
+The hidden layer enables the network to learn non-linear relationships, making shallow networks powerful function approximators.
+
+| Model / Neuron Type     | Output            | Activation            | Purpose                     |
+| ----------------------- | ----------------- | --------------------- | --------------------------- |
+| **Logistic Regression** | Probability (0–1) | Sigmoid               | Binary classification       |
+| **Perceptron**          | Class (0 or 1)    | Step                  | Basic linear classifier     |
+| **Hidden-Layer Neuron** | Feature value     | ReLU / Tanh / Sigmoid | Builds deep neural networks |

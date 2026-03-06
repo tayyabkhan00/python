@@ -1,0 +1,74 @@
+🧠 Convolutional Neural Networks (CNN)
+
+CNNs are used mainly for image tasks:
+Image classification (cat/dog)
+Face recognition
+Object detection
+Medical imaging
+Self-driving cars
+etc.
+They are extremely powerful because they learn patterns from images.
+
+⭐ 1. The Problem with Normal Neural Networks
+A normal neural network takes input like:
+784 numbers → flatten image 28x28
+This ignores:
+spatial layout
+edges, corners
+texture
+local patterns
+So accuracy becomes low.
+
+⭐ 2. CNN solves this by using Convolutions
+Think of convolution as a small window (3×3 or 5×5) sliding over the image.
+This window is called a filter or kernel.
+What it does:
+Mathematically "scans" the image
+Detects edges
+Finds corners
+Finds textures
+Extracts important patterns
+These patterns → become feature maps.
+
+⭐ 3. How Convolution Works (Very Easy)
+Example kernel (edge detector):
+1  0 -1
+1  0 -1
+1  0 -1
+This detects vertical edges.
+When this kernel slides across the image:
+If pixel region matches → output positive value
+If opposite → negative value
+If flat area → near zero
+This is how CNN sees shapes.
+
+⭐ 4. After Convolution → Max Pooling
+Pooling reduces the image size while keeping important information.
+Max Pooling example (2×2):
+[1, 5]
+[2, 3]
+→ output = 5 (maximum)
+This helps:
+Reduce computation
+Prevent overfitting
+Keep only strongest signals
+
+⭐ 5. CNN Architecture (Simple)
+A basic CNN has:
+Conv Layer
+ReLU
+Max Pooling
+(repeat many times)
+Flatten
+Fully connected layer
+Softmax output
+This is the heart of all image models.
+
+⭐ 6. What CNN Learns (Automatically)
+Layer 1 learns → edges
+Layer 2 learns → corners
+Layer 3 learns → textures
+Layer 4 learns → shapes (eyes, ears, wheels)
+Layer 5 learns → whole object
+You don’t manually code these.
+The network learns them during training.

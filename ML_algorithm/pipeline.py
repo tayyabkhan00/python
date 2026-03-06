@@ -16,3 +16,6 @@ pipe = Pipeline([
 
 pipe.fit(X_train, y_train)
 y_pred = pipe.predict(X_test)
+
+# A Pipeline in sklearn is a way to automate preprocessing and model training steps together. 
+# It prevents data leakage and ensures transformations are applied correctly during cross-validation and testing.

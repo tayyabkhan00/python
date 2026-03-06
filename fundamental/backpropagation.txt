@@ -1,0 +1,58 @@
+🧠 Backpropagation
+
+Backpropagation is how a neural network learns.
+Simple idea:
+Make a prediction
+Compare with the true answer
+Calculate how wrong it is (loss)
+Move weights in the direction that makes the loss smaller
+Repeat again and again
+This is exactly how humans learn from mistakes.
+
+⭐ Step-by-Step Intuition 
+1️⃣ Network makes a prediction
+Example:
+Actual label = 1
+Model predicts = 0.2
+→ Bad prediction.
+
+2️⃣ Compute the loss
+Example (Binary Cross Entropy):
+Loss = high → model is wrong.
+
+3️⃣ The model asks:
+“Which weight caused the mistake?”
+Different weights affect predictions differently.
+
+4️⃣ Compute gradients
+A gradient tells:
+direction to move
+how much to move
+Think of it like:
+Hot → go left
+Cold → go right
+Gradients show the steepest direction to reduce loss.
+
+5️⃣ Update the weights
+Using Gradient Descent:
+new_weight = old_weight - learning_rate * gradient
+Small learning rate → slow learning
+Huge learning rate → unstable model
+
+⭐ Putting It All Together
+Forward Pass:
+input → weight → activation → output
+Backward Pass (Backprop):
+output → loss → compute gradients → update weights
+Neural networks train by doing:
+Forward → Backward → Forward → Backward → ... (many epochs)
+
+⭐ Example (Super Simple)
+Consider 1 neuron:
+output = w*x + b
+Prediction vs actual → find loss.
+Then backprop adjusts:
+weight (w)
+bias (b)
+So next time prediction becomes a little better.
+After thousands of updates → model becomes smart.

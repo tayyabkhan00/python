@@ -1,0 +1,54 @@
+✅ Similarity
+
+Both scaled and standardized data have the same purpose:
+
+👉 Make features comparable
+👉 Remove unit/scale differences
+👉 Help ML models work better
+
+Example: Height (cm) and Salary (₹) can be brought to similar scale.
+
+✅ Difference (Real-World Meaning)
+1️⃣ Min-Max Scaling (0–1 scaling)
+scaled = (x - min) / (max - min)
+
+Real-world meaning:
+
+✔ Converts values into a percentage-like form
+✔ 0 = minimum value in data
+✔ 1 = maximum value in data
+✔ Everything else falls between 0 and 1
+
+Use when:
+👉 Data is bounded (marks, speed limits, age, etc.)
+👉 You want values in strict 0–1 range
+
+Not good for:
+❌ Outliers (they stretch the scale)
+
+2️⃣ Standardization (Z-score normalization)
+std = (x - mean) / std
+
+Real-world meaning:
+
+✔ Converts values into how many standard deviations away from mean
+✔ Data becomes centered at 0
+✔ Spread becomes 1
+
+Interpretation:
+
+0 = average
+
++1 = one std above average
+
+-1 = one std below average
+
+Use when:
+👉 Data has normal/near-normal distribution
+👉 Models assume Gaussian data (ML, statistics)
+👉 Data has outliers → less distortion than min-max
+
+🎯 Super-short summary
+Method	                         Real-world meaning	                       Best for
+Scaled (0–1)	              Percentage form	               Bounded values, neural nets
+Standardized (Z-score)	      How far from average	           Stats, ML models, outliers
